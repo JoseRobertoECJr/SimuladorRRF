@@ -23,9 +23,6 @@ namespace SimuladorRRF.Service
             // Pegando Dados
             _processList = new List<Process>(_processData.GetProcesses());
             _cycleLength = _processData.GetCycleLength();
-
-            // Iniciando variaveis de simulacao
-            _instante = 0;
             _processFila = new Fila<Process>();
         }
 
@@ -51,15 +48,16 @@ namespace SimuladorRRF.Service
 
             while (TemProcesso())
             {
-                // Executa processo
-                if(_processFila.Count != 0)
-                    process = Run(process);
+                // Roda o processo (nao executa no primeiro loop)
+                if (_instante != 0)
+                    process = Run();
 
-                // Verifica se ainda nao chegaram novos processos e coloca na fila
-                NextProcess();
+                // Verifica se chegaram novos processos e coloca na fila
+                NextProcesses();
 
-                finishedProcessList = FinishOrQueueProcess(process, finishedProcessList);
-
+                // Decide se processo vai para fila, se termina, ou se retornara depois por conta de algum I/O (nao executa no primeiro loop)
+                if (process.Id != null)
+                    finishedProcessList = FinishOrQueueProcess(process, finishedProcessList);
             }
 
             return finishedProcessList;
@@ -70,8 +68,10 @@ namespace SimuladorRRF.Service
 
         #region Metodos
 
-        private Process Run(Process process)
+        private Process Run()
         {
+            var process = _processFila.Remove();
+
             // Calcula tempo de execucao
             var processTempo = _processData.GetCycleLength(); ;
             var tempoRestante = process.TempoCPU - process.TempoExecutado;
@@ -80,19 +80,29 @@ namespace SimuladorRRF.Service
                 processTempo = tempoRestante;
             }
 
+            // Cria bloco anterior ao do processamento
+            process.Blocks.Add(new Block()
+            {
+                Tipo = BlockTipoEnum.NonExec,
+                Tempo = _instante - process.TurnAround
+            });
+
             // Cria Bloco do processo e altera a ProxChegada
             process.Blocks.Add(new Block {
                 Tipo =  BlockTipoEnum.Processo,
-                Tempo = 3
+                Tempo = processTempo
             });
+
+            // Define prox instante
+            _instante = process.TurnAround;
 
             return process;
         }
 
-        private void NextProcess()
+        private void NextProcesses()
         {
             var newProcessList = new List<Process>();
-
+            
             // Verifica se chegou algum processo
             foreach (var process in _processList)
             {
@@ -114,22 +124,26 @@ namespace SimuladorRRF.Service
                     if (nextInFila.ProxChegada > nP.ProxChegada)
                         nextInFila = nP;
                 }
+                newProcessList.Remove(nextInFila);
                 _processList.Remove(nextInFila);
-                _processFila.Add(nextInFila);
+                _processFila.Add(new Process(nextInFila));
             }
 
 
             // Vai para o proximo instante de tempo se nao ha processo na fila, coloca processos na Fila
-            if (_processFila.Count == 0)
+            if (_processFila.Count == 0 && _processList.Count != 0)
             {
-                foreach(var process in _processList)
+                // Define qual sera o instante inicial
+                foreach (var processo in _processList)
                 {
-                    
+                    if (processo == _processList[0])
+                        _instante = processo.ProxChegada;
+
+                    if (_instante > processo.ProxChegada)
+                        _instante = processo.ProxChegada;
                 }
-                NextProcess();
+                NextProcesses();
             }
-
-
 
         }
 
@@ -142,6 +156,13 @@ namespace SimuladorRRF.Service
                 return finishedProcessList;
             }
 
+            /*
+             *
+             *
+             *  TODO: NAO TEMOS OUTROS TIPOS DE BLOCOS NA EXECUCAO AINDA
+             *
+             * 
+             */
             if (process.Blocks.Last().Tipo != BlockTipoEnum.Processo)
             {
                 _processList.Add(process);
@@ -163,7 +184,6 @@ namespace SimuladorRRF.Service
 
             return true;
         }
-
 
         #endregion
     }

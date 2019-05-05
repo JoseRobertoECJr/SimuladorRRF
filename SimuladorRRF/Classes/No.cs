@@ -8,7 +8,7 @@ namespace SimuladorRRF.Classes
     public class No<T>
     {
         public T Value { get; private set; }
-        public No<T> Next { get; private set; }
+        public No<T> Next { get; set; }
 
         public No(T value)
         {

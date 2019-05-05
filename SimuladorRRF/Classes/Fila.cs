@@ -11,19 +11,23 @@ namespace SimuladorRRF.Classes
         public int Count { get; private set; }
 
         // Primeiro e ultimo da fila
-        private readonly No<T> First;
-        private No<T> Last;
+        private readonly No<T> _first;
+        private No<T> _last;
 
         public Fila()
         {
-            First = new No<T>(default(T));
-            Last = First;
+            _first = new No<T>(default(T));
+            _last = _first;
         }
 
         // Adiciona a fila
         public void Add(T value)
         {
-            Last = Last.Add(value);
+            _last = _last.Add(value);
+
+            if(_first.Next == null)
+                _first.Next = _last;
+
             Count++;
         }
 
@@ -31,7 +35,7 @@ namespace SimuladorRRF.Classes
         public T Remove()
         {
             Count--;
-            return First.Remove();
+            return _first.Remove();
         }
 
     }

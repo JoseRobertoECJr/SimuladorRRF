@@ -18,19 +18,19 @@ namespace SimuladorRRF
             Queue = 1,
 
             [Description("green")]
-            Processo = 3,
+            Processo = 2,
 
             #region Tipos IO
 
             [Description("red")]
-            Disco = 1,
+            Disco = 3,
 
             [Description("orange")]
-            FitaMagnetica = 2,
+            FitaMagnetica = 4,
 
 
             [Description("yellow")]
-            Impressora = 3,
+            Impressora = 5,
 
             #endregion
         }
