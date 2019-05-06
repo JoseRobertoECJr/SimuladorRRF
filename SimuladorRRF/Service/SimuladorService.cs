@@ -37,6 +37,22 @@ namespace SimuladorRRF.Service
             _processData.SetProcesses(newProcesses);
         }
 
+        public int GetCycleLength()
+        {
+            return _processData.GetCycleLength();
+        }
+
+        public void ChangeProcessListData(List<Process> processList)
+        {
+            _processData.SetProcesses(processList);
+        }
+
+        public void ChangeCycleLength(int cycleLength)
+        {
+            _processData.SetCycleLength(cycleLength);
+        }
+
+
         #endregion
 
         #region Main

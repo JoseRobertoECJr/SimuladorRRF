@@ -1,1 +1,31 @@
 <div id="chartContainer" style="width: 100%; height: 400px;"></div>
+
+
+<div style="text-align: center">
+  <b style="background-color: green">&nbsp;&nbsp;&nbsp;&nbsp;</b> Processo executando
+  <b style="background-color: #e0e0e0">&nbsp;&nbsp;&nbsp;&nbsp;</b> Processo executando
+</div>
+
+<br />
+
+<div>
+  <h2 style="text-align: center">Detalhes da simulação</h2>
+  <table class='table table-striped' *ngIf="processos">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Chegada</th>
+        <th>Tempo de CPU</th>
+        <th>Turnaround</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let processo of processos">
+        <td>{{ processo.id }}</td>
+        <td>{{ processo.proxChegada }}</td>
+        <td>{{ processo.tempoCPU }}</td>
+        <td>{{ processo.turnAround }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

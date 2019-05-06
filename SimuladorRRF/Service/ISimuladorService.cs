@@ -11,5 +11,8 @@ namespace SimuladorRRF.Service
         List<Process> GetProcesses();
         void SetProcesses(List<Process> newProcesses);
         List<Process> SimularProcessamento();
+        void ChangeProcessListData(List<Process> processList);
+        void ChangeCycleLength(int cycleLength);
+        int GetCycleLength();
     }
 }

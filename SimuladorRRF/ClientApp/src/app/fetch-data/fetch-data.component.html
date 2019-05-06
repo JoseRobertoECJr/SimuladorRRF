@@ -1,6 +1,15 @@
-<h1>Processos da Simulação</h1>
+<h2>Processos da Simulação</h2>
 
 <p>Os processos da simulação são apresentados a seguir.</p>
+
+<div class="row">
+  <div class="col s10">
+    RR Cycle: <input [(ngModel)]="cycleLength">
+  </div>
+  <div class="col s2">
+    <a (click)="changeCycleLength()" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">save</i></a>
+  </div>
+</div>
 
 <p *ngIf="!processos"><em>Loading...</em></p>
 
@@ -10,13 +19,21 @@
       <th>ID</th>
       <th>Chegada</th>
       <th>Tempo de CPU</th>
+      <th>Ação</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let processo of processos">
-      <td>{{ processo.id }}</td>
-      <td>{{ processo.proxChegada }}</td>
-      <td>{{ processo.tempoCPU }}</td>
+    <tr *ngFor="let processo of processos; let index = index;">
+      <td><input [(ngModel)]="processo.id" ></td>
+      <td><input [(ngModel)]="processo.proxChegada"></td>
+      <td><input [(ngModel)]="processo.tempoCPU"></td>
+      <td>
+        
+        <a (click)="deleteProcess(index)" class="btn-floating btn-large waves-effect waves-light red"><i class="material-icons">delete_forever</i></a>
+      </td>
     </tr>
   </tbody>
 </table>
+
+<a (click)="changeProcessList()" style="margin-right: 5px; bottom: 45px; right: 100px; position: absolute" class="btn-floating btn-large waves-effect waves-light blue"><i class="material-icons">save</i></a>
+<a (click)="addProcess()" class="btn-floating btn-large waves-effect waves-light" style="bottom: 45px; right: 24px; position: absolute"><i class="material-icons">add</i></a>

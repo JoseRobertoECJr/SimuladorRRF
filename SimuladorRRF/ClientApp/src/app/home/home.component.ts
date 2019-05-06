@@ -25,7 +25,6 @@ export class HomeComponent {
 
     this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
       this.processos = result;
-      console.log(result)
 
       let tamBlocos = 0;
       // Verifica qual o tamanho maior de blocos
@@ -65,7 +64,6 @@ export class HomeComponent {
         );
       }
 
-      console.log(this.graphBlocks)
       this.loadChart()
 
     }, error => console.error(error));
@@ -75,12 +73,12 @@ export class HomeComponent {
   loadChart() {
     while (this.graphBlocks == []);
 
-    console.log(this.graphBlocks)
     let chart = new CanvasJS.Chart("chartContainer", {
       animationEnabled: false,
       exportEnabled: true,
       title: {
-        text: "Resultado da simulação"
+        text: "Resultado da simulação",
+        fontFamily: "arial"
       },
       data: this.data
     });

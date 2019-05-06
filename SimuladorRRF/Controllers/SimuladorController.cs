@@ -29,5 +29,24 @@ namespace SimuladorRRF.Controllers
         {
             return _simuladorService.GetProcesses();
         }
+
+        [HttpGet("[action]")]
+        public int CycleLength()
+        {
+            return _simuladorService.GetCycleLength();
+        }
+
+        [HttpPost("[action]")]
+        public void ChangeProcessListData([FromBody] List<Process> processList)
+        {
+            _simuladorService.ChangeProcessListData(processList);
+        }
+
+        [HttpGet("[action]")]
+        public void ChangeCycleLength(int cycleLength)
+        {
+            _simuladorService.ChangeCycleLength(cycleLength);
+        }
+
     }
 }
