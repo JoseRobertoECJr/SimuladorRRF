@@ -1,24 +1,22 @@
-<h1>Weather forecast</h1>
+<h1>Processos da Simulação</h1>
 
-<p>This component demonstrates fetching data from the server.</p>
+<p>Os processos da simulação são apresentados a seguir.</p>
 
-<p *ngIf="!forecasts"><em>Loading...</em></p>
+<p *ngIf="!processos"><em>Loading...</em></p>
 
-<table class='table table-striped' *ngIf="forecasts">
+<table class='table table-striped' *ngIf="processos">
   <thead>
     <tr>
-      <th>Date</th>
-      <th>Temp. (C)</th>
-      <th>Temp. (F)</th>
-      <th>Summary</th>
+      <th>ID</th>
+      <th>Chegada</th>
+      <th>Tempo de CPU</th>
     </tr>
   </thead>
   <tbody>
-    <tr *ngFor="let forecast of forecasts">
-      <td>{{ forecast.dateFormatted }}</td>
-      <td>{{ forecast.temperatureC }}</td>
-      <td>{{ forecast.temperatureF }}</td>
-      <td>{{ forecast.summary }}</td>
+    <tr *ngFor="let processo of processos">
+      <td>{{ processo.id }}</td>
+      <td>{{ processo.proxChegada }}</td>
+      <td>{{ processo.tempoCPU }}</td>
     </tr>
   </tbody>
 </table>

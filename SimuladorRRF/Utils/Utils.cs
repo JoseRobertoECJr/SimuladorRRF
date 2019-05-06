@@ -11,10 +11,10 @@ namespace SimuladorRRF
     {
         public enum BlockTipoEnum
         {
-            [Description("white")]
+            [Description("#e0e0e0")]
             NonExec = 0,
 
-            [Description("grey")]
+            [Description("#e0e0e0")]
             Queue = 1,
 
             [Description("green")]

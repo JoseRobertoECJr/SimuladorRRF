@@ -16,31 +16,31 @@ namespace SimuladorRRF.Data
             new Process{
                 Id = "A",
                 ProxChegada = 2,
-                TempoCPU = 5,
+                TempoCPU = 15,
                 Blocks = new List<Block>()
             },
             new Process{
                 Id = "B",
                 ProxChegada = 3,
-                TempoCPU = 5,
+                TempoCPU = 8,
                 Blocks = new List<Block>()
             },
             new Process{
                 Id = "C",
                 ProxChegada = 4,
-                TempoCPU = 5,
+                TempoCPU = 12,
                 Blocks = new List<Block>()
             },
             new Process{
                 Id = "D",
                 ProxChegada = 5,
-                TempoCPU = 5,
+                TempoCPU = 9,
                 Blocks = new List<Block>()
             },
             new Process{
                 Id = "E",
                 ProxChegada = 7,
-                TempoCPU = 5,
+                TempoCPU = 17,
                 Blocks = new List<Block>()
             },
 

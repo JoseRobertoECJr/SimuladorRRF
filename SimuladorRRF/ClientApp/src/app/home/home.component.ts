@@ -1,5 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, Inject } from '@angular/core';
+import { HttpClient } from '@angular/common/http';
 import * as CanvasJS from '../../assets/canvasjs.min';
+import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-home',
@@ -7,27 +9,80 @@ import * as CanvasJS from '../../assets/canvasjs.min';
 })
 export class HomeComponent {
 
+  public processos: any[];
+  public graphBlocks: any[];
+  public data: any[];
+
+  constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.graphBlocks = [];
+    this.data = [];
+    
+  }
+
+
+
   ngOnInit() {
+
+    this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
+      this.processos = result;
+      console.log(result)
+
+      let tamBlocos = 0;
+      // Verifica qual o tamanho maior de blocos
+      for (let process of this.processos) {
+        if (process.blocks.length > tamBlocos)
+          tamBlocos = process.blocks.length;
+      }
+
+      // Cria todos os Arrays sem posicao
+      for (let process of this.processos) {
+        for (let i = 0; i < tamBlocos; i++) {
+
+          // Alloca mais espaco no array
+          if (this.graphBlocks.length == i)
+            this.graphBlocks.push([]);
+
+          this.graphBlocks[i].push([{ y: 0, label: process.id, color: "white" }]);
+
+        }
+      }
+
+      // Traduz para os blocos
+      for (let pos = 0; pos < this.processos.length; pos++) {
+        for (let i = 0; i < this.processos[pos].blocks.length; i++) {
+          // Insere Bloco
+          this.graphBlocks[i][pos] = { y: this.processos[pos].blocks[i].tempo, label: this.processos[pos].id, color: this.processos[pos].blocks[i].color };
+        }
+      }
+
+      for (let block of this.graphBlocks) {
+        this.data.push(
+          {
+            type: "stackedBar",
+            fillOpacity: .6,
+            dataPoints: block
+          }
+        );
+      }
+
+      console.log(this.graphBlocks)
+      this.loadChart()
+
+    }, error => console.error(error));
+    
+  }
+
+  loadChart() {
+    while (this.graphBlocks == []);
+
+    console.log(this.graphBlocks)
     let chart = new CanvasJS.Chart("chartContainer", {
-      animationEnabled: true,
+      animationEnabled: false,
       exportEnabled: true,
       title: {
-        text: "Basic Column Chart in Angular"
+        text: "Resultado da simulação"
       },
-      data: [{
-        type: "column",
-        dataPoints: [
-          { y: 71, label: "Apple" },
-          { y: 55, label: "Mango" },
-          { y: 50, label: "Orange" },
-          { y: 65, label: "Banana" },
-          { y: 95, label: "Pineapple" },
-          { y: 68, label: "Pears" },
-          { y: 28, label: "Grapes" },
-          { y: 34, label: "Lychee" },
-          { y: 14, label: "Jackfruit" }
-        ]
-      }]
+      data: this.data
     });
 
     chart.render();
