@@ -10,7 +10,7 @@ namespace SimuladorRRF.Classes
     public class Process
     {
         public string Id { get; set; }
-        public int ProxChegada { get; set; }
+        public int Chegada { get; set; }
         public int TempoCPU { get; set; }
         public int TempoExecutado {
             get {
@@ -30,12 +30,15 @@ namespace SimuladorRRF.Classes
                 var tempTrAr = 0;
                 foreach(var block in Blocks)
                 {
-                    tempTrAr += block.Tempo;
+                    if(block.Tipo != BlockTipoEnum.NonExec)
+                        tempTrAr += block.Tempo;
                 }
 
                 return tempTrAr;
             }
         }
+        public int TempoTotal { get => Chegada + TurnAround; }
+
         public List<Block> Blocks;
 
         public Process()
@@ -46,7 +49,7 @@ namespace SimuladorRRF.Classes
         public Process(Process process)
         {
             Id = process.Id;
-            ProxChegada = process.ProxChegada;
+            Chegada = process.Chegada;
             TempoCPU = process.TempoCPU;
             Blocks = new List<Block>(process.Blocks);
         }

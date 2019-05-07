@@ -40,7 +40,7 @@ export class FetchDataComponent {
   }
 
   addProcess() {
-    this.processos.push({ blocks: [], id: "Z", proxChegada: 0, tempoCPU: 1, tempoExecutado: 0, turnAround: 0 });
+    this.processos.push({ blocks: [], id: "Z", Chegada: 0, tempoCPU: 1, tempoExecutado: 0, turnAround: 0 });
   }
 
   deleteProcess(index: number) {

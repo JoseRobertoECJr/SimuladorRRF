@@ -22,5 +22,11 @@ namespace SimuladorRRF.Classes
             Tipo = block.Tipo;
             Tempo = block.Tempo;
         }
+
+        public Block(BlockTipoEnum tipo, int tempo)
+        {
+            Tipo = tipo;
+            Tempo = tempo;
+        }
     }
 }

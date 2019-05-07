@@ -11,19 +11,30 @@ namespace SimuladorRRF.Service
     public class SimuladorService : ISimuladorService
     {
         private readonly IProcessData _processData;
+
         private List<Process> _processList;
-        private Fila<Process> _processFila;
+
+        private Fila<Process> _baixaPrFila;
+        private Fila<Process> _altaPrFila;
+
         private int _instante;
+        private int _ioInstante;
+
         private int _cycleLength;
 
         public SimuladorService(IProcessData processData)
         {
             _processData = processData;
 
-            // Pegando Dados
             _processList = new List<Process>(_processData.GetProcesses());
+
+            _baixaPrFila = new Fila<Process>();
+            _altaPrFila = new Fila<Process>();
+
+            _instante = 0;
+            _ioInstante = 0;
+
             _cycleLength = _processData.GetCycleLength();
-            _processFila = new Fila<Process>();
         }
 
         #region Get and Set Data
@@ -55,41 +66,52 @@ namespace SimuladorRRF.Service
 
         #endregion
 
-        #region Main
-
         public List<Process> SimularProcessamento()
         {
             var process = new Process();
             var finishedProcessList = new List<Process>();
 
+            var pulaInstante = false;
+
             while (TemProcesso())
             {
-                // Roda o processo (nao executa no primeiro loop)
-                if (_instante != 0)
+                // Roda um processo se ha processos na fila
+                if (_altaPrFila.Count > 0 || _baixaPrFila.Count > 0)
                     process = Run();
-
+                
                 // Verifica se chegaram novos processos e coloca na fila
-                NextProcesses();
+                pulaInstante = NextProcesses();
 
                 // Decide se processo vai para fila, se termina, ou se retornara depois por conta de algum I/O (nao executa no primeiro loop)
                 if (process.Id != null)
                     finishedProcessList = FinishOrQueueProcess(process, finishedProcessList);
+
+                // Pula para o proximo instante de tempo se ainda nao chegaram processos
+                if (pulaInstante)
+                {
+                    JumpTime();
+                    pulaInstante = false;
+                }
             }
 
             return finishedProcessList;
 
         }
 
-        #endregion
-
         #region Metodos
 
         private Process Run()
         {
-            var process = _processFila.Remove();
+            var process = new Process();
+
+            // Decide qual das filas de prioridade vai servir
+            if (_altaPrFila.Count == 0)
+                process = _baixaPrFila.Remove();
+            else
+                process = _altaPrFila.Remove();
 
             // Calcula tempo de execucao
-            var processTempo = _processData.GetCycleLength(); ;
+            var processTempo = _cycleLength;
             var tempoRestante = process.TempoCPU - process.TempoExecutado;
             if (processTempo > tempoRestante)
             {
@@ -97,38 +119,78 @@ namespace SimuladorRRF.Service
             }
 
             // Cria bloco anterior ao do processamento
+            if(process.Blocks.Count == 0)
+                process.Blocks.Add(new Block()
+                {
+                    Tipo = BlockTipoEnum.NonExec,
+                    Tempo = process.Chegada
+                });
+            
             process.Blocks.Add(new Block()
             {
-                Tipo = BlockTipoEnum.NonExec,
-                Tempo = _instante - process.TurnAround
+                Tipo = BlockTipoEnum.Queue,
+                Tempo = _instante - process.TempoTotal
             });
 
-            // Cria Bloco do processo e altera a ProxChegada
-            process.Blocks.Add(new Block {
-                Tipo =  BlockTipoEnum.Processo,
-                Tempo = processTempo
-            });
+            // Verifica se ocorrera IO e qual tipo e coloca os blocos de: Processo, espera em IOQueue e IO
+            var blockIO = CalculateIO(processTempo);
+            if (blockIO.Tempo != 0)
+            {
+                // Calcula quando o IO ocorrera
+                var ioTime = (new Random()).Next(1, processTempo);
 
-            // Define prox instante
-            _instante = process.TurnAround;
+                process.Blocks.Add(new Block
+                {
+                    Tipo = BlockTipoEnum.Processo,
+                    Tempo = ioTime
+                });
+
+                _instante = process.TempoTotal;
+
+                if (_ioInstante > _instante)
+                {
+                    process.Blocks.Add(new Block
+                    {
+                        Tipo = BlockTipoEnum.IOQueue,
+                        Tempo = _ioInstante - _instante
+                    });
+                }
+
+                process.Blocks.Add(new Block(blockIO));
+
+                _ioInstante = process.TempoTotal;
+            }
+            else
+            {
+                // Cria Bloco do processo
+                process.Blocks.Add(new Block
+                {
+                    Tipo = BlockTipoEnum.Processo,
+                    Tempo = processTempo
+                });
+
+                // Define prox instante
+                _instante = process.TempoTotal;
+            }
+            
 
             return process;
         }
 
-        private void NextProcesses()
+        private bool NextProcesses()
         {
             var newProcessList = new List<Process>();
             
             // Verifica se chegou algum processo
             foreach (var process in _processList)
             {
-                if (process.ProxChegada <= _instante)
+                if (process.TempoTotal <= _instante)
                 {
                     newProcessList.Add(process);
                 }
             }
 
-            // Ordena os processos na Fila
+            // Ordena os processos nas Filas
             while(newProcessList.Count > 0)
             {
                 var nextInFila = new Process();
@@ -137,29 +199,29 @@ namespace SimuladorRRF.Service
                     if (nP == newProcessList[0])
                         nextInFila = nP;
 
-                    if (nextInFila.ProxChegada > nP.ProxChegada)
+                    if (nextInFila.TempoTotal > nP.TempoTotal)
                         nextInFila = nP;
                 }
                 newProcessList.Remove(nextInFila);
                 _processList.Remove(nextInFila);
-                _processFila.Add(new Process(nextInFila));
-            }
 
+                if (nextInFila.Blocks.Count == 0
+                || nextInFila.Blocks.Last().Tipo == BlockTipoEnum.FitaMagnetica
+                || nextInFila.Blocks.Last().Tipo == BlockTipoEnum.Impressora)
+                    _altaPrFila.Add(new Process(nextInFila));
+                else {
+                    _baixaPrFila.Add(new Process(nextInFila));
+                }
+
+            }
 
             // Vai para o proximo instante de tempo se nao ha processo na fila, coloca processos na Fila
-            if (_processFila.Count == 0 && _processList.Count != 0)
+            if (_baixaPrFila.Count == 0 && _altaPrFila.Count == 0 && _processList.Count != 0)
             {
-                // Define qual sera o instante inicial
-                foreach (var processo in _processList)
-                {
-                    if (processo == _processList[0])
-                        _instante = processo.ProxChegada;
-
-                    if (_instante > processo.ProxChegada)
-                        _instante = processo.ProxChegada;
-                }
-                NextProcesses();
+                return true;
             }
+
+            return false;
 
         }
 
@@ -168,7 +230,7 @@ namespace SimuladorRRF.Service
             // Se processo terminou, coloca na finishedProcessList
             if (process.TempoCPU == process.TempoExecutado)
             {
-                finishedProcessList.Add(process);
+                finishedProcessList.Add(new Process(process));
                 return finishedProcessList;
             }
 
@@ -181,13 +243,19 @@ namespace SimuladorRRF.Service
              */
             if (process.Blocks.Last().Tipo != BlockTipoEnum.Processo)
             {
-                _processList.Add(process);
+                _processList.Add(new Process(process));
 
                 return finishedProcessList;
             }
 
-            // Adiciona processo executado na Fila
-            _processFila.Add(process);
+            // Adiciona processo executado numa das Filas
+            if (process.Blocks.Count == 0
+                || process.Blocks.Last().Tipo == BlockTipoEnum.FitaMagnetica
+                || process.Blocks.Last().Tipo == BlockTipoEnum.Impressora)
+                _altaPrFila.Add(new Process(process));
+            else if (process.Blocks.Last().Tipo == BlockTipoEnum.Processo
+                || process.Blocks.Last().Tipo == BlockTipoEnum.Disco)
+                _baixaPrFila.Add(new Process(process));
 
 
             return finishedProcessList;
@@ -195,12 +263,49 @@ namespace SimuladorRRF.Service
 
         private bool TemProcesso()
         {
-            if (_processFila.Count == 0 && _processList.Count == 0)
-                return false;
-
-            return true;
+            return (_baixaPrFila.Count > 0 || _altaPrFila.Count > 0 || _processList.Count > 0);
         }
 
         #endregion
+
+        #region Metodos Auxiliares
+
+        private void JumpTime()
+        {
+            // Define qual sera o instante inicial
+            foreach (var processo in _processList)
+            {
+                if (processo == _processList[0])
+                    _instante = processo.TempoTotal;
+
+                if (_instante > processo.TempoTotal)
+                    _instante = processo.TempoTotal;
+            }
+        }
+
+        private Block CalculateIO(int processTempo)
+        {
+            var block = new Block();
+
+            if (processTempo == 1)
+                return block;
+
+            // Gera numeros de 1 a 5
+            var rand = (new Random()).Next(1,6);
+
+            // Se rand for 1, tem IO (20% de chances de IO)
+            if(rand == 1)
+            {
+                // Gera numeros entre 3 e 5. Numeros correspondentes ao Tipo de IO no enumerado
+                rand = (new Random()).Next(3,6);
+
+                block = new Block((BlockTipoEnum)rand, rand);
+            }
+
+            return block;
+        }
+
+        #endregion
+
     }
 }

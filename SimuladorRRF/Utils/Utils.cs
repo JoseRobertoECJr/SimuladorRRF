@@ -11,13 +11,13 @@ namespace SimuladorRRF
     {
         public enum BlockTipoEnum
         {
-            [Description("#e0e0e0")]
+            [Description("white")]
             NonExec = 0,
 
-            [Description("#e0e0e0")]
+            [Description("#ababab")]
             Queue = 1,
 
-            [Description("green")]
+            [Description("blue")]
             Processo = 2,
 
             #region Tipos IO
@@ -33,6 +33,9 @@ namespace SimuladorRRF
             Impressora = 5,
 
             #endregion
+
+            [Description("#e0e0e0")]
+            IOQueue = 6,
         }
 
         public static String GetEnumDescription(Enum value)

@@ -25,6 +25,7 @@ export class HomeComponent {
 
     this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
       this.processos = result;
+      console.log(result)
 
       let tamBlocos = 0;
       // Verifica qual o tamanho maior de blocos
