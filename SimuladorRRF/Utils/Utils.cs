@@ -34,7 +34,7 @@ namespace SimuladorRRF
 
             #endregion
 
-            [Description("#e0e0e0")]
+            [Description("#585858")]
             IOQueue = 6,
         }
 

@@ -84,7 +84,10 @@ namespace SimuladorRRF.Service
 
                 // Decide se processo vai para fila, se termina, ou se retornara depois por conta de algum I/O (nao executa no primeiro loop)
                 if (process.Id != null)
+                {
                     finishedProcessList = FinishOrQueueProcess(process, finishedProcessList);
+                    process.Id = null;
+                }
 
                 // Pula para o proximo instante de tempo se ainda nao chegaram processos
                 if (pulaInstante)
