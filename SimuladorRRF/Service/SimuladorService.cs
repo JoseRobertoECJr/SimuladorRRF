@@ -128,12 +128,23 @@ namespace SimuladorRRF.Service
                     Tipo = BlockTipoEnum.NonExec,
                     Tempo = process.Chegada
                 });
-            
-            process.Blocks.Add(new Block()
-            {
-                Tipo = BlockTipoEnum.Queue,
-                Tempo = _instante - process.TempoTotal
-            });
+
+            if (process.Blocks.Last().Tipo == BlockTipoEnum.NonExec
+                || process.Blocks.Last().Tipo == BlockTipoEnum.FitaMagnetica
+                || process.Blocks.Last().Tipo == BlockTipoEnum.Impressora)
+                process.Blocks.Add(new Block()
+                {
+                    Tipo = BlockTipoEnum.AltaPrQueue,
+                    Tempo = _instante - process.TempoTotal
+                });
+            else if (process.Blocks.Last().Tipo == BlockTipoEnum.Processo
+                || process.Blocks.Last().Tipo == BlockTipoEnum.Disco)
+                process.Blocks.Add(new Block()
+                {
+                    Tipo = BlockTipoEnum.BaixaPrQueue,
+                    Tempo = _instante - process.TempoTotal
+                });
+
 
             // Verifica se ocorrera IO e qual tipo e coloca os blocos de: Processo, espera em IOQueue e IO
             var blockIO = CalculateIO(processTempo);

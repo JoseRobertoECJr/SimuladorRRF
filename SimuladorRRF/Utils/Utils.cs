@@ -14,8 +14,8 @@ namespace SimuladorRRF
             [Description("white")]
             NonExec = 0,
 
-            [Description("#ababab")]
-            Queue = 1,
+            [Description("#4c4c4c")]
+            AltaPrQueue = 1,
 
             [Description("blue")]
             Processo = 2,
@@ -34,8 +34,11 @@ namespace SimuladorRRF
 
             #endregion
 
-            [Description("#585858")]
+            [Description("#000000")]
             IOQueue = 6,
+
+            [Description("#adadad")]
+            BaixaPrQueue = 7
         }
 
         public static String GetEnumDescription(Enum value)
