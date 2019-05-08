@@ -1,7 +1,6 @@
 import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as CanvasJS from '../../assets/canvasjs.min';
-import { forEach } from '@angular/router/src/utils/collection';
 
 @Component({
   selector: 'app-home',
@@ -12,17 +11,23 @@ export class HomeComponent {
   public processos: any[];
   public graphBlocks: any[];
   public data: any[];
+  public chart;
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
-    this.graphBlocks = [];
-    this.data = [];
-    
   }
 
 
 
   ngOnInit() {
 
+    this.simular();
+    
+  }
+
+  simular() {
+    this.processos = [];
+    this.graphBlocks = [];
+    this.data = [];
     this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
       let processos = result;
 
@@ -88,13 +93,16 @@ export class HomeComponent {
       this.loadChart()
 
     }, error => console.error(error));
-    
   }
 
   loadChart() {
     while (this.graphBlocks == []);
 
-    let chart = new CanvasJS.Chart("chartContainer", {
+    if (this.chart)
+      this.chart.destroy();
+    this.chart = null;
+
+    this.chart = new CanvasJS.Chart("chartContainer", {
       animationEnabled: false,
       exportEnabled: true,
       title: {
@@ -104,7 +112,7 @@ export class HomeComponent {
       data: this.data
     });
 
-    chart.render();
+    this.chart.render();
   }
 
 }
