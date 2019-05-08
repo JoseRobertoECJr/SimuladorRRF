@@ -18,7 +18,7 @@ namespace SimuladorRRF.Classes
         public ProcessArray(Process[] processes)
         {
             Value = new Process[_max];
-            for (var i = 0; i < _max; i++)
+            for (var i = 0; i < processes.Length; i++)
             {
                 if (processes != null)
                     Value[i] = processes[i];

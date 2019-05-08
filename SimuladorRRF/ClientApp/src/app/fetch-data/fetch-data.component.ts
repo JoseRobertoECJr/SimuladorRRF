@@ -11,9 +11,17 @@ export class FetchDataComponent {
   public cycleLength: number
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
+    this.processos = [];
     http.get<any[]>(baseUrl + 'api/Simulador/FixedData').subscribe(result => {
-      this.processos = result;
+      let processos = result;
       console.log(result)
+
+      for (let processo of processos) {
+        if (processo != null)
+          this.processos.push(processo)
+      }
+      console.log(this.processos)
+
     }, error => console.error(error));
 
     this.getCycleLength();
@@ -34,13 +42,14 @@ export class FetchDataComponent {
 
   changeProcessList() {
     let processList = this.processos;
+    console.log(processList)
     this.http.post(this.baseUrl + 'api/Simulador/ChangeProcessListData', processList).subscribe(() => {
 
     }, error => console.error(error));
   }
 
   addProcess() {
-    this.processos.push({ blocks: [], id: "Z", Chegada: 0, tempoCPU: 1, tempoExecutado: 0, turnAround: 0 });
+    this.processos.push({ blocks: { count: 0, tempoExecutado: 0, turnAround: 0, value: Array(1000) }, id: "Z", chegada: 0, tempoCPU: 1, tempoExecutado: 0, turnAround: 0, tempoTotal: 0 });
   }
 
   deleteProcess(index: number) {

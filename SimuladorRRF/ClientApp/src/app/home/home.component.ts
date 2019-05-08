@@ -24,20 +24,19 @@ export class HomeComponent {
   ngOnInit() {
 
     this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
-      this.processos = result;
-      console.log(result)
+      let processos = result;
 
       // Limpando Arrays
       let clearProcessos = [];
-      for (let process of this.processos) {
+      for (let process of processos) {
         if (process != null)
           clearProcessos.push(process);
       }
-      this.processos = clearProcessos;
+      processos = clearProcessos;
       console.log(clearProcessos)
 
       // Setando blocos
-      for (let process of this.processos) {
+      for (let process of processos) {
         let blocos = [];
         for (let bloco of process.blocks.value) {
           if (bloco != null)
@@ -45,6 +44,8 @@ export class HomeComponent {
         }
         process.blocks = blocos;
       }
+
+      this.processos = processos;
 
       let tamBlocos = 0;
       // Verifica qual o tamanho maior de blocos
