@@ -206,7 +206,7 @@ namespace SimuladorRRF.Service
                 var nextInFila = new Process();
                 foreach(var nP in newProcessList.Value)
                 {
-                    if (nP != null && nP == newProcessList.Value[0])
+                    if (nP != null && nP == newProcessList.First())
                         nextInFila = nP;
 
                     if (nP != null &&  nextInFila.TempoTotal > nP.TempoTotal)
@@ -278,7 +278,7 @@ namespace SimuladorRRF.Service
             // Define qual sera o instante inicial
             foreach (var processo in _processList.Value)
             {
-                if (processo != null && processo == _processList.Value[0])
+                if (processo != null && processo == _processList.First())
                     _instante = processo.TempoTotal;
 
                 if (processo != null &&  _instante > processo.TempoTotal)

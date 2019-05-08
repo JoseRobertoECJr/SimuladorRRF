@@ -64,6 +64,19 @@ namespace SimuladorRRF.Classes
             }
         }
 
+        public Process First()
+        {
+            Process v = new Process();
+            for (var i = 0; i < _max; i++)
+            {
+                if (Value[i] != null) {
+                    v = Value[i];
+                    break;
+                }
+            }
+            return v;
+        }
+
         public Process Last()
         {
 

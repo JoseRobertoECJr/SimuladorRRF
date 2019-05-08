@@ -18,7 +18,7 @@ namespace SimuladorRRF.Classes
         {
             get
             {
-                return Blocks.Count;
+                return Blocks.TempoExecutado;
             }
         }
         public int TurnAround

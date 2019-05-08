@@ -78,11 +78,28 @@ namespace SimuladorRRF.Classes
                 for (var i = 0; i < _max; i++)
                 {
                     if (Value[i] != null && Value[i].Tempo != 0 && Value[i].Tipo != BlockTipoEnum.NonExec)
-                        count++;
+                        count += Value[i].Tempo;
                 }
 
                 return count;
             }
         }
+
+        public int TempoExecutado
+        {
+            get
+            {
+                var count = 0;
+
+                for (var i = 0; i < _max; i++)
+                {
+                    if (Value[i] != null && Value[i].Tempo != 0 && Value[i].Tipo == BlockTipoEnum.Processo)
+                        count += Value[i].Tempo;
+                }
+
+                return count;
+            }
+        }
+
     }
 }
