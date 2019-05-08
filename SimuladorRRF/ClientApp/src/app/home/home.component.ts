@@ -27,6 +27,25 @@ export class HomeComponent {
       this.processos = result;
       console.log(result)
 
+      // Limpando Arrays
+      let clearProcessos = [];
+      for (let process of this.processos) {
+        if (process != null)
+          clearProcessos.push(process);
+      }
+      this.processos = clearProcessos;
+      console.log(clearProcessos)
+
+      // Setando blocos
+      for (let process of this.processos) {
+        let blocos = [];
+        for (let bloco of process.blocks.value) {
+          if (bloco != null)
+            blocos.push(bloco);
+        }
+        process.blocks = blocos;
+      }
+
       let tamBlocos = 0;
       // Verifica qual o tamanho maior de blocos
       for (let process of this.processos) {

@@ -22,7 +22,7 @@ namespace SimuladorRRF.Service
         {
             _processData = processData;
 
-            _processList = _processData.GetProcesses();
+            _processList = new ProcessArray(_processData.GetProcesses().Value);
 
             _baixaPrFila = new Fila<Process>();
             _altaPrFila = new Fila<Process>();
