@@ -19,15 +19,15 @@ namespace SimuladorRRF.Controllers
         }
 
         [HttpGet("[action]")]
-        public List<Process> SimularProcessamento()
+        public Process[] SimularProcessamento()
         {
-            return _simuladorService.SimularProcessamento();
+            return _simuladorService.SimularProcessamento().Value;
         }
 
         [HttpGet("[action]")]
-        public List<Process> FixedData()
+        public Process[] FixedData()
         {
-            return _simuladorService.GetProcesses();
+            return _simuladorService.GetProcesses().Value;
         }
 
         [HttpGet("[action]")]
@@ -37,9 +37,9 @@ namespace SimuladorRRF.Controllers
         }
 
         [HttpPost("[action]")]
-        public void ChangeProcessListData([FromBody] List<Process> processList)
+        public void ChangeProcessListData([FromBody] Process[] processList)
         {
-            _simuladorService.ChangeProcessListData(processList);
+            _simuladorService.ChangeProcessListData(new ProcessArray(processList));
         }
 
         [HttpGet("[action]")]

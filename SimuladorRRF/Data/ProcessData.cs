@@ -10,53 +10,58 @@ namespace SimuladorRRF.Data
     {
         private int CycleLength = 3;
 
-        private List<Process> Processes = new List<Process>
-        {
+        private ProcessArray Processes;
 
-            new Process{
-                Id = "A",
-                Chegada = 2,
-                TempoCPU = 15,
-                Blocks = new List<Block>()
-            },
-            new Process{
-                Id = "B",
-                Chegada = 3,
-                TempoCPU = 8,
-                Blocks = new List<Block>()
-            },
-            new Process{
-                Id = "C",
-                Chegada = 4,
-                TempoCPU = 12,
-                Blocks = new List<Block>()
-            },
-            new Process{
-                Id = "D",
-                Chegada = 5,
-                TempoCPU = 9,
-                Blocks = new List<Block>()
-            },
-            new Process{
-                Id = "E",
-                Chegada = 7,
-                TempoCPU = 17,
-                Blocks = new List<Block>()
-            },
-
-        };
+        
 
         public ProcessData()
         {
+            Processes = new ProcessArray();
 
+            Processes.Add(new Process
+            {
+                Id = "A",
+                Chegada = 2,
+                TempoCPU = 15,
+                Blocks = new BlockArray()
+            });
+            
+            Processes.Add(new Process
+            {
+                Id = "B",
+                Chegada = 3,
+                TempoCPU = 8,
+                Blocks = new BlockArray()
+            });
+            Processes.Add(new Process
+            {
+                Id = "C",
+                Chegada = 4,
+                TempoCPU = 12,
+                Blocks = new BlockArray()
+            });
+            Processes.Add(new Process
+            {
+                Id = "D",
+                Chegada = 5,
+                TempoCPU = 9,
+                Blocks = new BlockArray()
+            });
+            Processes.Add(new Process
+            {
+                Id = "E",
+                Chegada = 7,
+                TempoCPU = 17,
+                Blocks = new BlockArray()
+            });
         }
 
-        public List<Process> GetProcesses()
+        public ProcessArray GetProcesses()
         {
             return Processes;
         }
 
-        public void SetProcesses(List<Process> newProcesses)
+        public void SetProcesses(ProcessArray newProcesses)
         {
             Processes = newProcesses;
         }

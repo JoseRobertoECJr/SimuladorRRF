@@ -12,38 +12,34 @@ namespace SimuladorRRF.Classes
         public string Id { get; set; }
         public int Chegada { get; set; }
         public int TempoCPU { get; set; }
-        public int TempoExecutado {
-            get {
-                var tempEx = 0;
-                foreach(var block in Blocks)
-                {
-                    if(block.Tipo == BlockTipoEnum.Processo)
-                        tempEx += block.Tempo;
-                }
-                return tempEx;
+        public BlockArray Blocks;
+
+        public int TempoExecutado
+        {
+            get
+            {
+                return Blocks.Count;
             }
         }
-        public int TurnAround {
-            get {
-                Blocks.Sum(block => block.Tempo);
-
-                var tempTrAr = 0;
-                foreach(var block in Blocks)
-                {
-                    if(block.Tipo != BlockTipoEnum.NonExec)
-                        tempTrAr += block.Tempo;
-                }
-
-                return tempTrAr;
+        public int TurnAround
+        {
+            get
+            {
+                return Blocks.TurnAround;
             }
         }
-        public int TempoTotal { get => Chegada + TurnAround; }
+        public int TempoTotal
+        {
+            get
+            {
+                return Chegada + TurnAround;
+            }
+        }
 
-        public List<Block> Blocks;
 
         public Process()
         {
-            Blocks = new List<Block>();
+            Blocks = new BlockArray();
         }
 
         public Process(Process process)
@@ -51,7 +47,7 @@ namespace SimuladorRRF.Classes
             Id = process.Id;
             Chegada = process.Chegada;
             TempoCPU = process.TempoCPU;
-            Blocks = new List<Block>(process.Blocks);
+            Blocks = new BlockArray(process.Blocks);
         }
 
     }

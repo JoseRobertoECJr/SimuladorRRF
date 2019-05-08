@@ -8,8 +8,8 @@ namespace SimuladorRRF.Data
 {
     public interface IProcessData
     {
-        List<Process> GetProcesses();
-        void SetProcesses(List<Process> newProcesses);
+        ProcessArray GetProcesses();
+        void SetProcesses(ProcessArray newProcesses);
         int GetCycleLength();
         void SetCycleLength(int newLength);
     }

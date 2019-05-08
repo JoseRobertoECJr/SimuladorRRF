@@ -11,22 +11,18 @@ namespace SimuladorRRF.Service
     public class SimuladorService : ISimuladorService
     {
         private readonly IProcessData _processData;
-
-        private List<Process> _processList;
-
+        private ProcessArray _processList;
         private Fila<Process> _baixaPrFila;
         private Fila<Process> _altaPrFila;
-
         private int _instante;
         private int _ioInstante;
-
         private int _cycleLength;
 
         public SimuladorService(IProcessData processData)
         {
             _processData = processData;
 
-            _processList = new List<Process>(_processData.GetProcesses());
+            _processList = _processData.GetProcesses();
 
             _baixaPrFila = new Fila<Process>();
             _altaPrFila = new Fila<Process>();
@@ -39,11 +35,11 @@ namespace SimuladorRRF.Service
 
         #region Get and Set Data
 
-        public List<Process> GetProcesses()
+        public ProcessArray GetProcesses()
         {
             return _processData.GetProcesses();
         }
-        public void SetProcesses(List<Process> newProcesses)
+        public void SetProcesses(ProcessArray newProcesses)
         {
             _processData.SetProcesses(newProcesses);
         }
@@ -53,7 +49,7 @@ namespace SimuladorRRF.Service
             return _processData.GetCycleLength();
         }
 
-        public void ChangeProcessListData(List<Process> processList)
+        public void ChangeProcessListData(ProcessArray processList)
         {
             _processData.SetProcesses(processList);
         }
@@ -66,10 +62,10 @@ namespace SimuladorRRF.Service
 
         #endregion
 
-        public List<Process> SimularProcessamento()
+        public ProcessArray SimularProcessamento()
         {
             var process = new Process();
-            var finishedProcessList = new List<Process>();
+            var finishedProcessList = new ProcessArray();
 
             var pulaInstante = false;
 
@@ -193,12 +189,12 @@ namespace SimuladorRRF.Service
 
         private bool NextProcesses()
         {
-            var newProcessList = new List<Process>();
+            var newProcessList = new ProcessArray();
             
             // Verifica se chegou algum processo
-            foreach (var process in _processList)
+            foreach (var process in _processList.Value)
             {
-                if (process.TempoTotal <= _instante)
+                if (process != null && process.TempoTotal <= _instante)
                 {
                     newProcessList.Add(process);
                 }
@@ -208,12 +204,12 @@ namespace SimuladorRRF.Service
             while(newProcessList.Count > 0)
             {
                 var nextInFila = new Process();
-                foreach(var nP in newProcessList)
+                foreach(var nP in newProcessList.Value)
                 {
-                    if (nP == newProcessList[0])
+                    if (nP != null && nP == newProcessList.Value[0])
                         nextInFila = nP;
 
-                    if (nextInFila.TempoTotal > nP.TempoTotal)
+                    if (nP != null &&  nextInFila.TempoTotal > nP.TempoTotal)
                         nextInFila = nP;
                 }
                 newProcessList.Remove(nextInFila);
@@ -239,7 +235,7 @@ namespace SimuladorRRF.Service
 
         }
 
-        private List<Process> FinishOrQueueProcess(Process process, List<Process> finishedProcessList)
+        private ProcessArray FinishOrQueueProcess(Process process, ProcessArray finishedProcessList)
         {
             // Se processo terminou, coloca na finishedProcessList
             if (process.TempoCPU == process.TempoExecutado)
@@ -248,13 +244,6 @@ namespace SimuladorRRF.Service
                 return finishedProcessList;
             }
 
-            /*
-             *
-             *
-             *  TODO: NAO TEMOS OUTROS TIPOS DE BLOCOS NA EXECUCAO AINDA
-             *
-             * 
-             */
             if (process.Blocks.Last().Tipo != BlockTipoEnum.Processo)
             {
                 _processList.Add(new Process(process));
@@ -287,12 +276,12 @@ namespace SimuladorRRF.Service
         private void JumpTime()
         {
             // Define qual sera o instante inicial
-            foreach (var processo in _processList)
+            foreach (var processo in _processList.Value)
             {
-                if (processo == _processList[0])
+                if (processo != null && processo == _processList.Value[0])
                     _instante = processo.TempoTotal;
 
-                if (_instante > processo.TempoTotal)
+                if (processo != null &&  _instante > processo.TempoTotal)
                     _instante = processo.TempoTotal;
             }
         }

@@ -8,10 +8,10 @@ namespace SimuladorRRF.Service
 {
     public interface ISimuladorService
     {
-        List<Process> GetProcesses();
-        void SetProcesses(List<Process> newProcesses);
-        List<Process> SimularProcessamento();
-        void ChangeProcessListData(List<Process> processList);
+        ProcessArray GetProcesses();
+        void SetProcesses(ProcessArray newProcesses);
+        ProcessArray SimularProcessamento();
+        void ChangeProcessListData(ProcessArray processList);
         void ChangeCycleLength(int cycleLength);
         int GetCycleLength();
     }
