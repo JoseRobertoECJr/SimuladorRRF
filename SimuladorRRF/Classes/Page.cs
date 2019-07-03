@@ -10,7 +10,7 @@ namespace SimuladorRRF.Classes
     public class Page
     {
         public string Id { get; set; }
-        public BlockArray Pages;
+        public PageArray Pages;
         public Page(Process process)
         {
             Random randNum = new Random();
