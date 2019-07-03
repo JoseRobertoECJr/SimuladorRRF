@@ -9,7 +9,7 @@ namespace SimuladorRRF.Classes
 {
     public class Process
     {
-        public string Id { get; set; }
+        public int Id { get; set; }
         public int Chegada { get; set; }
         public int TempoCPU { get; set; }
         public BlockArray Blocks;
@@ -36,14 +36,13 @@ namespace SimuladorRRF.Classes
             }
         }
 
-        public PageTable PageTable { get; set; }
+        public int NumPags { get; }
 
         public Process()
         {
-            // Gera numeros de 1 a 8
-            var rand = (new Random()).Next(4, 9);
+            // Gera numeros de 4 a 8
+            NumPags = (new Random()).Next(4, 9);
 
-            PageTable = new PageTable(rand);
             Blocks = new BlockArray();
         }
 
@@ -54,11 +53,14 @@ namespace SimuladorRRF.Classes
             TempoCPU = process.TempoCPU;
             Blocks = new BlockArray(process.Blocks);
 
-            // Gera numeros de 1 a 8
-            var rand = (new Random()).Next(4, 9);
-
-            PageTable = new PageTable(rand);
+            // Gera numeros de 4 a 8
+            NumPags = (new Random()).Next(4, 9);
         }
 
+        public int NextPage()
+        {
+            //prox pagina que o processo precisa para ser executado
+            return (new Random()).Next(0, NumPags);
+        }
     }
 }

@@ -100,7 +100,7 @@ namespace SimuladorRRF.Service
 
         }
 
-        #region Metodos
+        #region Metodos Processos
 
         private Process Run()
         {
@@ -317,45 +317,54 @@ namespace SimuladorRRF.Service
 
         private Page RequisitaPagina(Process process)
         {
-            var page = new Page();
+            Page page;
 
-            var tableRow = EscolhePagina(process);
+            // Pergunta ao projeto qual a pagina que precisa para executar
+            var pageNum = process.NextPage();
 
-            if(tableRow.frame != null)
-                page = BuscaPagMemPrinc(tableRow.frame);
-            else
+            // Resgata a tabela de paginas do processo
+            var pageTable = _processData.GetPageTable(process);
+
+            // Resgata o endereco fisico da tabela de paginas
+            var frame = pageTable.TableRowArray[pageNum].frame;
+
+            if (frame != null)
             {
-                page = BuscaPagMemVirt(process, tableRow.pag);
-                tableRow.frame = AtualizaMemPrinc(page);
-                AtualizaPageTable(tableRow);
+                // Procura a pagina no frame da Memoria Principal
+                page = _processData.GetMemPrincipalFrame((int)frame);
+
+            } else {
+
+                page = BuscaPagMemVirt(process, pageNum);
+
+                var oldProcessNFrame = AtualizaMemPrinc(page);
+
+                _processData.LimpaPageTable(oldProcessNFrame.OldProcess);
+                
+
+                AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
             }
 
             return page;
         }
 
-        private TableRow EscolhePagina(Process process)
+        private Page BuscaPagMemVirt(Process process, int pagNum)
         {
-            return new TableRow();
+            return new Page(process, pagNum);
         }
 
-        private Page BuscaPagMemPrinc(int? frame)
+        private OldProcessNFrame AtualizaMemPrinc(Page page)
         {
-            return new Page();
+            var oldProcess = _processData.GetOldestProcess();
+
+            SwapOut(oldProcess);
+
+            var frame = SwapIn(page);
+
+            return new OldProcessNFrame(oldProcess, frame);
         }
 
-        private Page BuscaPagMemVirt(Process process, int pag)
-        {
-            return new Page();
-        }
-
-        private int AtualizaMemPrinc(Page page)
-        {
-            var endereco = 0;
-
-            return endereco;
-        }
-
-        private void AtualizaPageTable(TableRow tableRow)
+        private void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
         {
 
         }

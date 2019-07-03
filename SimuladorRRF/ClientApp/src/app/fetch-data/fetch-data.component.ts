@@ -12,7 +12,7 @@ export class FetchDataComponent {
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
     this.processos = [];
-    http.get<any[]>(baseUrl + 'api/Simulador/FixedData').subscribe(result => {
+    http.get<any[]>("https://localhost:5001/" + 'api/Simulador/FixedData').subscribe(result => {
       let processos = result;
       console.log(result)
 

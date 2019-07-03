@@ -12,5 +12,8 @@ namespace SimuladorRRF.Data
         void SetProcesses(ProcessArray newProcesses);
         int GetCycleLength();
         void SetCycleLength(int newLength);
+        PageTable GetPageTable(Process process);
+        void LimpaPageTable(Process oldProcess);
+        Page GetMemPrincipalFrame(int frame);
     }
 }
