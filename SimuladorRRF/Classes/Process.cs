@@ -37,12 +37,14 @@ namespace SimuladorRRF.Classes
         }
 
         public int NumPags { get; }
+        public readonly int WSL = 4;
+        public int[] WorkingSet { get; set; }
 
         public Process()
         {
             // Gera numeros de 4 a 8
             NumPags = (new Random()).Next(4, 9);
-
+            WorkingSet = new int[WSL];
             Blocks = new BlockArray();
         }
 

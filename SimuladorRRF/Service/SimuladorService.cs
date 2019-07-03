@@ -322,11 +322,8 @@ namespace SimuladorRRF.Service
             // Pergunta ao projeto qual a pagina que precisa para executar
             var pageNum = process.NextPage();
 
-            // Resgata a tabela de paginas do processo
-            var pageTable = _processData.GetPageTable(process);
-
-            // Resgata o endereco fisico da tabela de paginas
-            var frame = pageTable.TableRowArray[pageNum].frame;
+            // Resgata o frame da pagina na Tabela de Paginas
+            var frame = _processData.GetPageTableFrameAddress(process, pageNum);
 
             if (frame != null)
             {
@@ -341,7 +338,6 @@ namespace SimuladorRRF.Service
 
                 _processData.LimpaPageTable(oldProcessNFrame.OldProcess);
                 
-
                 AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
             }
 

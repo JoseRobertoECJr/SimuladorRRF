@@ -52,7 +52,7 @@ namespace SimuladorRRF.Data
             CycleLength = newLength;
         }
 
-        public PageTable GetPageTable(Process process)
+        public int? GetPageTableFrameAddress(Process process, int pageNum)
         {
             PageTable processPage = null;
             foreach(var page in PageTableArray.Value)
@@ -64,7 +64,7 @@ namespace SimuladorRRF.Data
                 }
             }
 
-            return processPage;
+            return processPage.TableRowArray[pageNum].frame;
         }
 
         public void LimpaPageTable(Process process)
