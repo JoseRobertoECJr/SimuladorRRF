@@ -9,10 +9,11 @@ namespace SimuladorRRF.Classes
     {
         public Page[] Value { get; private set; }
         private int _max = 64;
-
+        public int WSL { get; }
         public PageArray()
         {
             Value = new Page[_max];
+            WSL = 4;
         }
 
         public PageArray(Page[] pages)

@@ -9,13 +9,13 @@ namespace SimuladorRRF.Data
     public class ProcessData : IProcessData
     {
         private int CycleLength = 3;
-
+        public int maxProcesses = 1000;
+        public int qntProcesses = 0;
         private ProcessArray Processes;
-
-        
-
+        private PageArray[] PageTable;
         public ProcessData()
         {
+            PageTable = new PageArray[maxProcesses];
             Processes = new ProcessArray();
 
             Processes.Add(new Process
@@ -23,35 +23,6 @@ namespace SimuladorRRF.Data
                 Id = "A",
                 Chegada = 2,
                 TempoCPU = 15,
-                Blocks = new BlockArray()
-            });
-            
-            Processes.Add(new Process
-            {
-                Id = "B",
-                Chegada = 3,
-                TempoCPU = 8,
-                Blocks = new BlockArray()
-            });
-            Processes.Add(new Process
-            {
-                Id = "C",
-                Chegada = 4,
-                TempoCPU = 12,
-                Blocks = new BlockArray()
-            });
-            Processes.Add(new Process
-            {
-                Id = "D",
-                Chegada = 5,
-                TempoCPU = 9,
-                Blocks = new BlockArray()
-            });
-            Processes.Add(new Process
-            {
-                Id = "E",
-                Chegada = 7,
-                TempoCPU = 17,
                 Blocks = new BlockArray()
             });
         }
