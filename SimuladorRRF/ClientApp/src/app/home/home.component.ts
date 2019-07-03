@@ -28,7 +28,7 @@ export class HomeComponent {
     this.processos = [];
     this.graphBlocks = [];
     this.data = [];
-    this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
+    this.http.get<any[]>("https://localhost:5001/" + 'api/Simulador/SimularProcessamento').subscribe(result => {
       let processos = result;
 
       // Limpando Arrays
