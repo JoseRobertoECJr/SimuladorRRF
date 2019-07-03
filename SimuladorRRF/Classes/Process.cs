@@ -36,9 +36,14 @@ namespace SimuladorRRF.Classes
             }
         }
 
+        public PageTable PageTable { get; set; }
 
         public Process()
         {
+            // Gera numeros de 1 a 8
+            var rand = (new Random()).Next(4, 9);
+
+            PageTable = new PageTable(rand);
             Blocks = new BlockArray();
         }
 
@@ -48,6 +53,11 @@ namespace SimuladorRRF.Classes
             Chegada = process.Chegada;
             TempoCPU = process.TempoCPU;
             Blocks = new BlockArray(process.Blocks);
+
+            // Gera numeros de 1 a 8
+            var rand = (new Random()).Next(4, 9);
+
+            PageTable = new PageTable(rand);
         }
 
     }

@@ -73,8 +73,11 @@ namespace SimuladorRRF.Service
             {
                 // Roda um processo se ha processos na fila
                 if (_altaPrFila.Count > 0 || _baixaPrFila.Count > 0)
+                {
+                    var pagReal = RequisitaPagina(process);
                     process = Run();
-                
+                }
+
                 // Verifica se chegaram novos processos e coloca na fila
                 pulaInstante = NextProcesses();
 
@@ -306,6 +309,55 @@ namespace SimuladorRRF.Service
             }
 
             return block;
+        }
+
+        #endregion
+
+        #region GERENCIAMENTO DE MEMORIA
+
+        private Page RequisitaPagina(Process process)
+        {
+            var page = new Page();
+
+            var tableRow = EscolhePagina(process);
+
+            if(tableRow.frame != null)
+                page = BuscaPagMemPrinc(tableRow.frame);
+            else
+            {
+                page = BuscaPagMemVirt(process, tableRow.pag);
+                tableRow.frame = AtualizaMemPrinc(page);
+                AtualizaPageTable(tableRow);
+            }
+
+            return page;
+        }
+
+        private TableRow EscolhePagina(Process process)
+        {
+            return new TableRow();
+        }
+
+        private Page BuscaPagMemPrinc(int? frame)
+        {
+            return new Page();
+        }
+
+        private Page BuscaPagMemVirt(Process process, int pag)
+        {
+            return new Page();
+        }
+
+        private int AtualizaMemPrinc(Page page)
+        {
+            var endereco = 0;
+
+            return endereco;
+        }
+
+        private void AtualizaPageTable(TableRow tableRow)
+        {
+
         }
 
         #endregion
