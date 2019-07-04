@@ -10,11 +10,11 @@ namespace SimuladorRRF.Classes
     public class Page
     {
         public int ProcessID { get; set; }
-        public int PageNum { get; set }
+        public int PageNum { get; set; }
 
         public Page(Process process, int pageNum)
         {
-            ProcessID = process.Id;
+            ProcessID = (int)process.Id;
             PageNum = pageNum;
         }
     }
