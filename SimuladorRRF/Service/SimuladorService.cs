@@ -334,9 +334,10 @@ namespace SimuladorRRF.Service
 
                 page = BuscaPagMemVirt(process, pageNum);
 
-                var oldProcessNFrame = AtualizaMemPrinc(page);
+                var oldProcessNFrame = AtualizaMemPrinc(process, page);
 
-                _processData.LimpaPageTable(oldProcessNFrame.OldProcess);
+                if(oldProcessNFrame.OldProcess != null)
+                    _processData.LimpaPageTable(oldProcessNFrame.OldProcess);
                 
                 AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
             }
@@ -346,16 +347,25 @@ namespace SimuladorRRF.Service
 
         private Page BuscaPagMemVirt(Process process, int pagNum)
         {
-            return new Page(process, pagNum);
+            return new Page(new Process(process), pagNum);
         }
 
-        private OldProcessNFrame AtualizaMemPrinc(Page page)
+        private OldProcessNFrame AtualizaMemPrinc(Process process, Page page)
         {
             var oldProcess = _processData.GetOldestProcess();
+            int frame;
 
-            SwapOut(oldProcess);
-
-            var frame = SwapIn(page);
+            if (oldProcess.Id == page.ProcessID || process.QntInMem == process.WSL)
+            {
+                frame = _processData.SwapInSameProcess(process);
+                oldProcess = null;
+            }
+            else
+            {
+                _processData.SwapOut(oldProcess);
+                frame = _processData.SwapIn(page);
+            }
+            
 
             return new OldProcessNFrame(oldProcess, frame);
         }

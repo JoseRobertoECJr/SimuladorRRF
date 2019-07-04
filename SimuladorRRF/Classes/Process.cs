@@ -9,7 +9,7 @@ namespace SimuladorRRF.Classes
 {
     public class Process
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
         public int Chegada { get; set; }
         public int TempoCPU { get; set; }
         public BlockArray Blocks;
@@ -38,13 +38,13 @@ namespace SimuladorRRF.Classes
 
         public int NumPags { get; }
         public readonly int WSL = 4;
-        public int[] WorkingSet { get; set; }
+        public int?[] WorkingSet { get; set; }
 
         public Process()
         {
             // Gera numeros de 4 a 8
             NumPags = (new Random()).Next(4, 9);
-            WorkingSet = new int[WSL];
+            WorkingSet = new int?[WSL];
             Blocks = new BlockArray();
         }
 
@@ -64,5 +64,20 @@ namespace SimuladorRRF.Classes
             //prox pagina que o processo precisa para ser executado
             return (new Random()).Next(0, NumPags);
         }
+
+        public int QntInMem
+        {
+            get
+            {
+                var i = 0;
+                foreach (var pageNum in WorkingSet)
+                {
+                    if (pageNum != null)
+                        i++;
+                }
+                return i;
+            }
+        }
+
     }
 }
