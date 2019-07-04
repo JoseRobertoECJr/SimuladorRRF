@@ -54,17 +54,17 @@ namespace SimuladorRRF.Data
 
         public int? GetPageTableFrameAddress(Process process, int pageNum)
         {
-            PageTable processPage = null;
-            foreach(var page in PageTableArray.Value)
+            PageTable processPageTable = null;
+            foreach(var pageTable in PageTableArray.Value)
             {
-                if (page.ProcessID == process.Id)
+                if (pageTable.ProcessID == process.Id)
                 {
-                    processPage = page;
+                    processPageTable = pageTable;
                     break;
                 }
             }
 
-            return processPage.TableRowArray[pageNum].frame;
+            return processPageTable.TableRowArray[pageNum].frame;
         }
 
         public void LimpaPageTable(Process process)
@@ -94,7 +94,15 @@ namespace SimuladorRRF.Data
 
         public Process GetOldestProcess()
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+            int maiorTempo = 0;
+            Process oldestProcess = null;
+
+            foreach (var processo in Processes.Value)
+                if ((processo.TempoTotal > maiorTempo) && (processo.QntInMem > 0))
+                    oldestProcess = processo;
+
+            return oldestProcess;
         }
 
         public int SwapInSameProcess(Process process, Page page)
@@ -114,7 +122,16 @@ namespace SimuladorRRF.Data
 
         public void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
         {
-            throw new NotImplementedException();
+            // throw new NotImplementedException();
+
+            foreach(var pageTable in PageTableArray.Value)
+            {
+                if (pageTable.ProcessID == process.Id)
+                {
+                    pageTable.TableRowArray[pageNum].frame = enderecoReal;
+                    break;
+                }
+            }
         }
     }
 }
