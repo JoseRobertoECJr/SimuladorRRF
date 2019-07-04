@@ -66,9 +66,16 @@ namespace SimuladorRRF.Classes
             }
         }
 
-        public void InsertNewFrame()
+        public void InsertNewFrame(Page page)
         {
-
+            for(var i = 0; i < _max; i++)
+            {
+                if(Value[i] == null)
+                {
+                    Value[i] = page;
+                    break;
+                }
+            }
         }
 
         private int GetOldestProcess()

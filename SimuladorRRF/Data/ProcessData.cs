@@ -83,7 +83,7 @@ namespace SimuladorRRF.Data
             var processPageTable = PageTableArray.Value[i];
             for (var j = 0; j < processPageTable.TableRowArray.Count(); j++)
             {
-                PageTableArray.Value[i].TableRowArray[j].frame = null;
+                processPageTable.TableRowArray[j].frame = null;
             }
         }
 
@@ -94,40 +94,66 @@ namespace SimuladorRRF.Data
 
         public Process GetOldestProcess()
         {
-            // throw new NotImplementedException();
             int maiorTempo = 0;
             Process oldestProcess = null;
 
             foreach (var processo in Processes.Value)
+            {
                 if ((processo.TempoTotal > maiorTempo) && (processo.QntInMem > 0))
+                {
                     oldestProcess = processo;
+                }
+            }
 
             return oldestProcess;
         }
 
         public int SwapInSameProcess(Process process, Page page)
         {
-            throw new NotImplementedException();
+            for (var i = 0; i < MemPrincipal.Count; i++)
+            {
+                if ((MemPrincipal.Value[i].ProcessID == process.Id) && (process.QntInMem < process.WSL))
+                {
+                    MemPrincipal.InsertNewFrame(page);
+                    break;
+                }
+            }
+
+            return page.PageNum;
         }
 
         public int SwapIn(Page page)
         {
-            throw new NotImplementedException();
+            MemPrincipal.InsertNewFrame(page);
+
+            return page.PageNum;
         }
 
         public void SwapOut(Process oldProcess)
         {
-            throw new NotImplementedException();
+            // Vasculha o PageTableArray procurando a PageTable do processo
+            foreach(var pageTable in PageTableArray.Value)
+            {
+                if (pageTable.ProcessID == oldProcess.Id)
+                {
+                    // Atualiza o frame da página com o endereco nulo
+                    for (var i = 0; i < pageTable.TableRowArray.Count(); i++)
+                    {
+                        pageTable.TableRowArray[i].frame = null;
+                    }
+                    break;
+                }
+            }
         }
 
         public void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
         {
-            // throw new NotImplementedException();
-
+            // Vasculha o PageTableArray procurando a PageTable do processo
             foreach(var pageTable in PageTableArray.Value)
             {
                 if (pageTable.ProcessID == process.Id)
                 {
+                    // Atualiza o frame da página com o endereco real
                     pageTable.TableRowArray[pageNum].frame = enderecoReal;
                     break;
                 }
