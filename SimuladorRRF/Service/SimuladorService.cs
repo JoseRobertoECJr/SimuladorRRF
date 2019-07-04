@@ -338,8 +338,8 @@ namespace SimuladorRRF.Service
 
                 if(oldProcessNFrame.OldProcess != null)
                     _processData.LimpaPageTable(oldProcessNFrame.OldProcess);
-                
-                AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
+
+                _processData.AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
             }
 
             return page;
@@ -368,11 +368,6 @@ namespace SimuladorRRF.Service
             
 
             return new OldProcessNFrame(oldProcess, frame);
-        }
-
-        private void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
-        {
-
         }
 
         #endregion

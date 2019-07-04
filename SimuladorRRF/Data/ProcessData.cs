@@ -92,5 +92,29 @@ namespace SimuladorRRF.Data
             return MemPrincipal.Value[frame];
         }
 
+        public Process GetOldestProcess()
+        {
+            throw new NotImplementedException();
+        }
+
+        public int SwapInSameProcess(Process process)
+        {
+            throw new NotImplementedException();
+        }
+
+        public int SwapIn(Page page)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SwapOut(Process oldProcess)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

@@ -19,5 +19,6 @@ namespace SimuladorRRF.Data
         int SwapInSameProcess(Process process);
         int SwapIn(Page page);
         void SwapOut(Process oldProcess);
+        void AtualizaPageTable(Process process, int pageNum, int enderecoReal);
     }
 }
