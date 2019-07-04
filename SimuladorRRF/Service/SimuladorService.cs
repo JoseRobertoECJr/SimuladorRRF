@@ -357,7 +357,7 @@ namespace SimuladorRRF.Service
 
             if (oldProcess.Id == page.ProcessID || process.QntInMem == process.WSL)
             {
-                frame = _processData.SwapInSameProcess(process);
+                frame = _processData.SwapInSameProcess(process, page);
                 oldProcess = null;
             }
             else

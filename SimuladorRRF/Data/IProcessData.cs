@@ -16,7 +16,7 @@ namespace SimuladorRRF.Data
         void LimpaPageTable(Process oldProcess);
         Page GetMemPrincipalFrame(int frame);
         Process GetOldestProcess();
-        int SwapInSameProcess(Process process);
+        int SwapInSameProcess(Process process, Page page);
         int SwapIn(Page page);
         void SwapOut(Process oldProcess);
         void AtualizaPageTable(Process process, int pageNum, int enderecoReal);

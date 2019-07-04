@@ -97,7 +97,7 @@ namespace SimuladorRRF.Data
             throw new NotImplementedException();
         }
 
-        public int SwapInSameProcess(Process process)
+        public int SwapInSameProcess(Process process, Page page)
         {
             throw new NotImplementedException();
         }
