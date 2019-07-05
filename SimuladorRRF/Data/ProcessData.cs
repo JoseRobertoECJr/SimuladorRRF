@@ -52,7 +52,7 @@ namespace SimuladorRRF.Data
             CycleLength = newLength;
         }
 
-        public int? GetPageTableFrameAddress(Process process, int pageNum)
+        public PageTable GetPageTable(Process process)
         {
             PageTable processPageTable = null;
             foreach(var pageTable in PageTableArray.Value)
@@ -64,7 +64,7 @@ namespace SimuladorRRF.Data
                 }
             }
 
-            return processPageTable.TableRowArray[pageNum].frame;
+            return processPageTable;
         }
 
         public void LimpaPageTable(Process process)
@@ -89,44 +89,22 @@ namespace SimuladorRRF.Data
 
         public Page GetMemPrincipalFrame(int frame)
         {
-            return MemPrincipal.Value[frame];
+            return MemPrincipal.UseFramePage(frame);
         }
 
-        public Process GetOldestProcess()
+        public int? GetOldestProcess()
         {
-            int maiorTempo = 0;
-            Process oldestProcess = null;
-
-            foreach (var processo in Processes.Value)
-            {
-                if ((processo.TempoTotal > maiorTempo) && (processo.QntInMem > 0))
-                {
-                    oldestProcess = processo;
-                }
-            }
-
-            return oldestProcess;
+            return MemPrincipal.GetOldestProcess();
         }
 
-        public int SwapInSameProcess(Process process, Page page)
+        public int SwapInSameProcess(Page page, int oldestPageNum)
         {
-            for (var i = 0; i < MemPrincipal.Count; i++)
-            {
-                if ((MemPrincipal.Value[i].ProcessID == process.Id) && (process.QntInMem < process.WSL))
-                {
-                    MemPrincipal.InsertNewFrame(page);
-                    break;
-                }
-            }
-
-            return page.PageNum;
+            return MemPrincipal.SwapInSameProcess(page, oldestPageNum);
         }
 
         public int SwapIn(Page page)
         {
-            MemPrincipal.InsertNewFrame(page);
-
-            return page.PageNum;
+            return MemPrincipal.SwapIn(page);
         }
 
         public void SwapOut(Process oldProcess)
@@ -159,5 +137,6 @@ namespace SimuladorRRF.Data
                 }
             }
         }
+
     }
 }

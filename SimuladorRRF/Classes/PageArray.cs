@@ -7,13 +7,14 @@ namespace SimuladorRRF.Classes
 {
     public class PageArray
     {
-        public Page[] Value { get; private set; }
+        private Page[] Value { get; }
         private readonly int _max = 64;
 
-        private int OlderProcessList;
+        private int?[] OlderProcessList;
 
         public PageArray()
         {
+            OlderProcessList = new int?[_max];
             Value = new Page[_max];
         }
 
@@ -49,20 +50,11 @@ namespace SimuladorRRF.Classes
         //    }
         //}
 
-        public int Count
+        public int NumPages
         {
             get
             {
-
-                var count = 0;
-
-                for (var i = 0; i < _max; i++)
-                {
-                    if (Value[i] != null)
-                        count++;
-                }
-
-                return count;
+                return _max;
             }
         }
 
@@ -78,12 +70,65 @@ namespace SimuladorRRF.Classes
             }
         }
 
-        private int GetOldestProcess()
+        public Page UseFramePage(int frame)
         {
-            return 0;
+            var page = Value[frame];
+            var signal = false;
+            int i;
+            for (i = 0; i < _max || OlderProcessList[i] == null; i++)
+            {
+                if (page.ProcessID == OlderProcessList[i])
+                    signal = true;
+
+                if (signal)
+                    OlderProcessList[i] = OlderProcessList[i + 1];
+            }
+
+            OlderProcessList[i] = Value[frame].ProcessID;
+
+            return page;
+        }
+
+        public int? GetOldestProcess()
+        {
+            return OlderProcessList[0];
         }
 
         private void InsertNewProcess()
+        {
+
+        }
+
+        public int SwapIn(Page page)
+        {
+            int i;
+            for (i = 0; i < NumPages; i++)
+            {
+                if (Value[i] == null)
+                {
+                    Value[i] = page;
+                    break;
+                }
+            }
+
+            return i;
+        }
+
+        public int SwapInSameProcess(Page page, int oldestPageNum)
+        {
+            for (var i = 0; i < NumPages; i++)
+            {
+                if (Value[i].ProcessID == page.ProcessID && oldestPageNum == Value[i].PageNum)
+                {
+                    Value[i] = page;
+                    break;
+                }
+            }
+
+            return page.PageNum;
+        }
+
+        SwapOut()
         {
 
         }

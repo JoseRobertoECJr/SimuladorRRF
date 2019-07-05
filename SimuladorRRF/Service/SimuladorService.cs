@@ -322,8 +322,11 @@ namespace SimuladorRRF.Service
             // Pergunta ao projeto qual a pagina que precisa para executar
             var pageNum = process.NextPage();
 
-            // Resgata o frame da pagina na Tabela de Paginas
-            var frame = _processData.GetPageTableFrameAddress(process, pageNum);
+            // Resgata a Tabela de Paginas
+            var pageTable = _processData.GetPageTable(process);
+
+            // Resgata o endereco do frame
+            var frame = pageTable.TableRowArray[pageNum].frame;
 
             if (frame != null)
             {
@@ -334,13 +337,14 @@ namespace SimuladorRRF.Service
 
                 page = BuscaPagMemVirt(process, pageNum);
 
-                var oldProcessNFrame = AtualizaMemPrinc(process, page);
+                var oldProcessNFrame = AtualizaMemPrinc(pageTable, page);
 
-                if(oldProcessNFrame.OldProcess != null)
-                    _processData.LimpaPageTable(oldProcessNFrame.OldProcess);
+                if(oldProcessNFrame.OldProcessID != null)
+                    _processData.LimpaPageTable(oldProcessNFrame.OldProcessID);
 
                 _processData.AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
             }
+
 
             return page;
         }
@@ -350,24 +354,23 @@ namespace SimuladorRRF.Service
             return new Page(new Process(process), pagNum);
         }
 
-        private OldProcessNFrame AtualizaMemPrinc(Process process, Page page)
+        private OldProcessNFrame AtualizaMemPrinc(PageTable pageTable,  Page page)
         {
-            var oldProcess = _processData.GetOldestProcess();
+            var oldProcessID = _processData.GetOldestProcess();
             int frame;
 
-            if (oldProcess.Id == page.ProcessID || process.QntInMem == process.WSL)
+            if (oldProcessID == page.ProcessID || pageTable.QntInMem == pageTable.WSL)
             {
-                frame = _processData.SwapInSameProcess(process, page);
-                oldProcess = null;
+                frame = _processData.SwapInSameProcess(page, (int)pageTable.WorkingSet[0]);
+                oldProcessID = null;
             }
             else
             {
-                _processData.SwapOut(oldProcess);
+                _processData.SwapOut(oldProcessID);
                 frame = _processData.SwapIn(page);
             }
-            
 
-            return new OldProcessNFrame(oldProcess, frame);
+            return new OldProcessNFrame(oldProcessID, frame);
         }
 
         #endregion

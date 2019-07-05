@@ -8,11 +8,11 @@ namespace SimuladorRRF.Classes
     public class OldProcessNFrame
     {
         public int Frame { get; set; }
-        public Process OldProcess { get; set; }
+        public int? OldProcessID { get; set; }
 
-        public OldProcessNFrame(Process oldProcess, int frame)
+        public OldProcessNFrame(int? oldProcess, int frame)
         {
-            OldProcess = oldProcess;
+            OldProcessID = oldProcess;
             Frame = frame;
         }
     }

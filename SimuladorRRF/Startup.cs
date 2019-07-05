@@ -45,7 +45,7 @@ namespace SimuladorRRF
 
             //injecao de dependencia
             services.AddScoped<ISimuladorService, SimuladorService>();
-            services.AddSingleton<IProcessData, ProcessData>();
+            services.AddTransient<IProcessData, ProcessData>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
