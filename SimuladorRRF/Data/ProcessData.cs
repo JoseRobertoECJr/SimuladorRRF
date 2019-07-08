@@ -23,6 +23,8 @@ namespace SimuladorRRF.Data
             PageTableArray = new PageTableArray(_maxProcesses);
             Processes = new ProcessArray();
 
+            MemPrincipal = new PageArray();
+
             Processes.Add(new Process
             {
                 Id = 1,
@@ -70,7 +72,10 @@ namespace SimuladorRRF.Data
                 for (var i = 0; i < PageTableArray.Value.Count(); i++)
                 {
                     if (PageTableArray.Value[i] == null)
-                        PageTableArray.Value[i] = new PageTable(process.NumPags);
+                    {
+                        PageTableArray.Value[i] = new PageTable(process);
+                        return PageTableArray.Value[i];
+                    }
                 }
             }
 

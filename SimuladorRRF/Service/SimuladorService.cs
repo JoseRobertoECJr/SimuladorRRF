@@ -64,7 +64,7 @@ namespace SimuladorRRF.Service
 
         public ProcessArray SimularProcessamento()
         {
-            var process = new Process();
+            Process process = null;
             var finishedProcessList = new ProcessArray();
 
             var pulaInstante = false;
@@ -74,18 +74,24 @@ namespace SimuladorRRF.Service
                 // Roda um processo se ha processos na fila
                 if (_altaPrFila.Count > 0 || _baixaPrFila.Count > 0)
                 {
+                    // Decide qual das filas de prioridade vai servir
+                    if (_altaPrFila.Count == 0)
+                        process = _baixaPrFila.Remove();
+                    else
+                        process = _altaPrFila.Remove();
+
                     var pagReal = RequisitaPagina(process);
-                    process = Run();
+                    process = Run(process);
                 }
 
                 // Verifica se chegaram novos processos e coloca na fila
                 pulaInstante = NextProcesses();
 
                 // Decide se processo vai para fila, se termina, ou se retornara depois por conta de algum I/O (nao executa no primeiro loop)
-                if (process.Id != null)
+                if (process != null)
                 {
                     finishedProcessList = FinishOrQueueProcess(process, finishedProcessList);
-                    process.Id = null;
+                    process = null;
                 }
 
                 // Pula para o proximo instante de tempo se ainda nao chegaram processos
@@ -102,16 +108,8 @@ namespace SimuladorRRF.Service
 
         #region Metodos Processos
 
-        private Process Run()
+        private Process Run(Process process)
         {
-            var process = new Process();
-
-            // Decide qual das filas de prioridade vai servir
-            if (_altaPrFila.Count == 0)
-                process = _baixaPrFila.Remove();
-            else
-                process = _altaPrFila.Remove();
-
             // Calcula tempo de execucao
             var processTempo = _cycleLength;
             var tempoRestante = process.TempoCPU - process.TempoExecutado;
@@ -326,7 +324,7 @@ namespace SimuladorRRF.Service
             var pageTable = _processData.GetPageTable(process);
 
             // Resgata o endereco do frame
-            var frame = pageTable.TableRowArray[pageNum].frame;
+            var frame = pageTable.FrameList[pageNum];
 
             if (frame != null)
             {

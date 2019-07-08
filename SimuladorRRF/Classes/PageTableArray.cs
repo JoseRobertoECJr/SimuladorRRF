@@ -28,9 +28,9 @@ namespace SimuladorRRF.Classes
 
             // Remove a referencia a memoria principal
             var processPageTable = Value[i];
-            for (var j = 0; j < processPageTable.TableRowArray.Count(); j++)
+            for (var j = 0; j < processPageTable.FrameList.Count(); j++)
             {
-                processPageTable.TableRowArray[j].frame = null;
+                processPageTable.FrameList[j] = null;
             }
         }
 
@@ -42,7 +42,7 @@ namespace SimuladorRRF.Classes
                 if (pageTable.ProcessID == process.Id)
                 {
                     // Atualiza o frame da página com o endereco real
-                    pageTable.TableRowArray[pageNum].frame = enderecoReal;
+                    pageTable.FrameList[pageNum] = enderecoReal;
                     break;
                 }
             }

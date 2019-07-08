@@ -8,14 +8,15 @@ namespace SimuladorRRF.Classes
     public class PageTable
     {
         public int ProcessID { get; set; }
-        public TableRow[] TableRowArray { get; set; }
+        public int?[] FrameList { get; set; }
         public readonly int WSL = 4;
         public int?[] WorkingSet { get; set; }
 
-        public PageTable(int numPags)
+        public PageTable(Process process)
         {
+            ProcessID = process.Id;
             WorkingSet = new int?[WSL];
-            TableRowArray = new TableRow[numPags];
+            FrameList = new int?[process.NumPags];
         }
 
         public int QntInMem

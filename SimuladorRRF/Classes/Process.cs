@@ -9,7 +9,7 @@ namespace SimuladorRRF.Classes
 {
     public class Process
     {
-        public int? Id { get; set; }
+        public int Id { get; set; }
         public int Chegada { get; set; }
         public int TempoCPU { get; set; }
         public BlockArray Blocks;
