@@ -41,8 +41,7 @@ namespace SimuladorRRF.Classes
             {
                 if (pageTable.ProcessID == process.Id)
                 {
-                    // Atualiza o frame da página com o endereco real
-                    pageTable.FrameList[pageNum] = enderecoReal;
+                    pageTable.Atualiza(pageNum, enderecoReal);
                     break;
                 }
             }

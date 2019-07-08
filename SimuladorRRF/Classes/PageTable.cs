@@ -33,5 +33,29 @@ namespace SimuladorRRF.Classes
             }
         }
 
+        public void Atualiza(int pageNum, int enderecoReal)
+        {
+            // Atualiza o frame da página com o endereco real
+            FrameList[pageNum] = enderecoReal;
+
+            if (QntInMem == WSL)
+            {
+                var olderPage = Shift();
+                FrameList[olderPage] = null;
+            }
+        }
+
+        private int Shift()
+        {
+            var olderPage = WorkingSet[0];
+
+            for (var i = 0; i < WSL; i++)
+            {
+                WorkingSet[i] = WorkingSet[i + 1];
+            }
+
+            return (int)olderPage;
+        }
+
     }
 }
