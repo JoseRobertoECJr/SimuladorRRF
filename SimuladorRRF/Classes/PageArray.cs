@@ -50,6 +50,22 @@ namespace SimuladorRRF.Classes
         //    }
         //}
 
+        public int Count
+        {
+            get
+            {
+                var i = 0;
+
+                foreach (var page in Value)
+                {
+                    if (page != null)
+                        i++;
+                }
+
+                return i;
+            }
+        }
+
         public int NumPages
         {
             get
@@ -63,8 +79,11 @@ namespace SimuladorRRF.Classes
             var page = Value[frame];
             var signal = false;
             int i;
-            for (i = 0; i < _max || OlderProcessList[i] == null; i++)
+            for (i = 0; i < _max; i++)
             {
+                if (OlderProcessList[i] == null)
+                    break;
+
                 if (page.ProcessID == OlderProcessList[i])
                     signal = true;
 
@@ -95,14 +114,6 @@ namespace SimuladorRRF.Classes
             return null;
         }
 
-        private void InsertNewProcess()
-        {
-            // Pega o processo no OlderProcessList e renova para o final
-
-
-            // Insert no processo na memoria
-        }
-
         public int SwapIn(Page page)
         {
             int i;
@@ -114,6 +125,8 @@ namespace SimuladorRRF.Classes
                     break;
                 }
             }
+
+            // TODO: Alloca posicao em OlderProcessList
 
             return i;
         }
@@ -129,12 +142,16 @@ namespace SimuladorRRF.Classes
                 }
             }
 
+            // TODO: Renova posicao em OlderProcessList
+
             return page.PageNum;
         }
 
         public void SwapOut(int processID)
         {
+            // Tira paginas de process
 
+            // Shift na OlderProcessList
         }
 
     }
