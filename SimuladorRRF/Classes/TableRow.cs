@@ -7,7 +7,6 @@ namespace SimuladorRRF.Classes
 {
     public class TableRow
     {
-        public int pag;
         public int? frame;
     }
 }

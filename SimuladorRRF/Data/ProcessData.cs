@@ -54,37 +54,32 @@ namespace SimuladorRRF.Data
 
         public PageTable GetPageTable(Process process)
         {
+            // Procura page table
             PageTable processPageTable = null;
             foreach(var pageTable in PageTableArray.Value)
             {
-                if (pageTable.ProcessID == process.Id)
+                if (pageTable != null && pageTable.ProcessID == process.Id)
                 {
                     processPageTable = pageTable;
                     break;
                 }
             }
 
+            if(processPageTable == null)
+            {
+                for (var i = 0; i < PageTableArray.Value.Count(); i++)
+                {
+                    if (PageTableArray.Value[i] == null)
+                        PageTableArray.Value[i] = new PageTable(process.NumPags);
+                }
+            }
+
             return processPageTable;
         }
 
-        public void LimpaPageTable(Process process)
+        public void LimpaPageTable(int processID)
         {
-            // Acha a pagina do process
-            int i;
-            for (i = 0; i < PageTableArray.Value.Count(); i++)
-            {
-                var pageTable = PageTableArray.Value[i];
-
-                if (pageTable.ProcessID == process.Id)
-                    break;
-            }
-
-            // Remove a referencia a memoria principal
-            var processPageTable = PageTableArray.Value[i];
-            for (var j = 0; j < processPageTable.TableRowArray.Count(); j++)
-            {
-                processPageTable.TableRowArray[j].frame = null;
-            }
+            PageTableArray.LimpaPageTable(processID);
         }
 
         public Page GetMemPrincipalFrame(int frame)
@@ -92,9 +87,9 @@ namespace SimuladorRRF.Data
             return MemPrincipal.UseFramePage(frame);
         }
 
-        public int? GetOldestProcess()
+        public int? GetOldestProcess(int processID)
         {
-            return MemPrincipal.GetOldestProcess();
+            return MemPrincipal.GetOldestProcess(processID);
         }
 
         public int SwapInSameProcess(Page page, int oldestPageNum)
@@ -107,35 +102,14 @@ namespace SimuladorRRF.Data
             return MemPrincipal.SwapIn(page);
         }
 
-        public void SwapOut(Process oldProcess)
+        public void SwapOut(int oldProcessID)
         {
-            // Vasculha o PageTableArray procurando a PageTable do processo
-            foreach(var pageTable in PageTableArray.Value)
-            {
-                if (pageTable.ProcessID == oldProcess.Id)
-                {
-                    // Atualiza o frame da página com o endereco nulo
-                    for (var i = 0; i < pageTable.TableRowArray.Count(); i++)
-                    {
-                        pageTable.TableRowArray[i].frame = null;
-                    }
-                    break;
-                }
-            }
+            MemPrincipal.SwapOut(oldProcessID);
         }
 
         public void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
         {
-            // Vasculha o PageTableArray procurando a PageTable do processo
-            foreach(var pageTable in PageTableArray.Value)
-            {
-                if (pageTable.ProcessID == process.Id)
-                {
-                    // Atualiza o frame da página com o endereco real
-                    pageTable.TableRowArray[pageNum].frame = enderecoReal;
-                    break;
-                }
-            }
+            PageTableArray.AtualizaPageTable(process, pageNum, enderecoReal);
         }
 
     }

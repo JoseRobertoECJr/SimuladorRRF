@@ -14,12 +14,12 @@ namespace SimuladorRRF.Data
         void SetCycleLength(int newLength);
 
         PageTable GetPageTable(Process process);
-        void LimpaPageTable(Process oldProcess);
+        void LimpaPageTable(int oldProcessID);
         Page GetMemPrincipalFrame(int frame);
-        int? GetOldestProcess();
+        int? GetOldestProcess(int processID);
         int SwapInSameProcess(Page page, int oldestPageNum);
         int SwapIn(Page page);
-        void SwapOut(Process oldProcess);
+        void SwapOut(int oldProcessID);
         void AtualizaPageTable(Process process, int pageNum, int enderecoReal);
     }
 }

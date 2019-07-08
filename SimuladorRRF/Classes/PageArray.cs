@@ -58,18 +58,6 @@ namespace SimuladorRRF.Classes
             }
         }
 
-        public void InsertNewFrame(Page page)
-        {
-            for(var i = 0; i < _max; i++)
-            {
-                if(Value[i] == null)
-                {
-                    Value[i] = page;
-                    break;
-                }
-            }
-        }
-
         public Page UseFramePage(int frame)
         {
             var page = Value[frame];
@@ -84,19 +72,35 @@ namespace SimuladorRRF.Classes
                     OlderProcessList[i] = OlderProcessList[i + 1];
             }
 
-            OlderProcessList[i] = Value[frame].ProcessID;
+            OlderProcessList[i] = page.ProcessID;
 
             return page;
         }
 
-        public int? GetOldestProcess()
+        public int? GetOldestProcess(int processID)
         {
-            return OlderProcessList[0];
+            foreach (var page in Value)
+            {
+                // ha espaco
+                if (page == null)
+                    return null;
+            }
+
+            foreach(var oldProcessID in OlderProcessList)
+            {
+                if (oldProcessID != processID)
+                    return oldProcessID;
+            }
+
+            return null;
         }
 
         private void InsertNewProcess()
         {
+            // Pega o processo no OlderProcessList e renova para o final
 
+
+            // Insert no processo na memoria
         }
 
         public int SwapIn(Page page)
@@ -128,7 +132,7 @@ namespace SimuladorRRF.Classes
             return page.PageNum;
         }
 
-        SwapOut()
+        public void SwapOut(int processID)
         {
 
         }
