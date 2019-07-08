@@ -43,6 +43,15 @@ namespace SimuladorRRF.Classes
                 var olderPage = Shift();
                 FrameList[olderPage] = null;
             }
+
+            for (var i = 0; i < WSL; i++)
+            {
+                if (WorkingSet[i] == null)
+                {
+                    WorkingSet[i] = pageNum;
+                    break;
+                }
+            }
         }
 
         private int Shift()
