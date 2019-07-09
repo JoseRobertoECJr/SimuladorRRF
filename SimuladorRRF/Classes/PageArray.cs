@@ -18,38 +18,6 @@ namespace SimuladorRRF.Classes
             Value = new Page[_max];
         }
 
-        //public PageArray(Page[] pages)
-        //{
-        //    Value = new Page[_max];
-        //    for (var i = 0; i < pages.Length; i++)
-        //    {
-        //        if (pages != null)
-        //            Value[i] = pages[i];
-        //    }
-        //}
-
-        //public void Add(Page v)
-        //{
-        //    for (var i = 0; i < _max; i++)
-        //    {
-        //        if (Value[i] == null)
-        //        {
-        //            Value[i] = v;
-        //            break;
-        //        }
-
-        //    }
-        //}
-
-        //public void Remove(Page v)
-        //{
-        //    for (var i = 0; i < _max; i++)
-        //    {
-        //        if (Value[i] != null && Value[i].Id == v.Id)
-        //            Value[i] = null;
-        //    }
-        //}
-
         public int Count
         {
             get
@@ -127,13 +95,15 @@ namespace SimuladorRRF.Classes
             }
 
             // TODO: Alloca posicao em OlderProcessList
+            UseFramePage(i);
 
             return i;
         }
 
         public int SwapInSameProcess(Page page, int oldestPageNum)
         {
-            for (var i = 0; i < NumPages; i++)
+            int i;
+            for (i = 0; i < NumPages; i++)
             {
                 if (Value[i].ProcessID == page.ProcessID && oldestPageNum == Value[i].PageNum)
                 {
@@ -143,15 +113,34 @@ namespace SimuladorRRF.Classes
             }
 
             // TODO: Renova posicao em OlderProcessList
+            UseFramePage(i);
 
-            return page.PageNum;
+            return i;
         }
 
         public void SwapOut(int processID)
         {
+            int i;
+
             // Tira paginas de process
+            for (i = 0; i < NumPages; i++)
+            {
+                if (Value[i].ProcessID == processID)
+                    Value[i] = null;
+            }
 
             // Shift na OlderProcessList
+            var signal = false;
+            for (i = 0; i < NumPages; i++)
+            {
+                if (OlderProcessList[i] == processID)
+                    signal = true;
+
+                if (signal)
+                    OlderProcessList[i] = OlderProcessList[i + 1];
+            }
+            OlderProcessList[i] = null;
+
         }
 
     }

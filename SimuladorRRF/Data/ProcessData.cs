@@ -30,7 +30,8 @@ namespace SimuladorRRF.Data
                 Id = 1,
                 Chegada = 2,
                 TempoCPU = 15,
-                Blocks = new BlockArray()
+                Blocks = new BlockArray(),
+                NumPags = (new Random()).Next(4, 9)
             });
         }
 

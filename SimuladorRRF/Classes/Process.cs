@@ -36,7 +36,7 @@ namespace SimuladorRRF.Classes
             }
         }
 
-        public int NumPags { get; }
+        public int NumPags { get; set; }
         
 
         public Process()
@@ -52,9 +52,7 @@ namespace SimuladorRRF.Classes
             Chegada = process.Chegada;
             TempoCPU = process.TempoCPU;
             Blocks = new BlockArray(process.Blocks);
-
-            // Gera numeros de 4 a 8
-            NumPags = (new Random()).Next(4, 9);
+            NumPags = process.NumPags;
         }
 
         public int NextPage()

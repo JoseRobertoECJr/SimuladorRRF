@@ -58,10 +58,12 @@ namespace SimuladorRRF.Classes
         {
             var olderPage = WorkingSet[0];
 
-            for (var i = 0; i < WSL; i++)
+            int i;
+            for (i = 0; i < WSL-1; i++)
             {
                 WorkingSet[i] = WorkingSet[i + 1];
             }
+            WorkingSet[i] = null;
 
             return (int)olderPage;
         }
