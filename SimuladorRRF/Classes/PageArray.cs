@@ -94,9 +94,19 @@ namespace SimuladorRRF.Classes
                 }
             }
 
-            string herow;
+            // hotfix
             if (i == 64)
-                herow = "";
+            {
+                SwapOut((int)GetOldestProcess(page.ProcessID));
+                for (i = 0; i < NumPages; i++)
+                {
+                    if (Value[i] == null)
+                    {
+                        Value[i] = page;
+                        break;
+                    }
+                }
+            }
 
             // TODO: Alloca posicao em OlderProcessList
             UseFramePage(i);
