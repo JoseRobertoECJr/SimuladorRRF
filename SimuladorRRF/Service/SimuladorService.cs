@@ -328,10 +328,6 @@ namespace SimuladorRRF.Service
 
             if (frame != null)
             {
-                string herow;
-                if (frame == 64)
-                    herow = "";
-
                 // Procura a pagina no frame da Memoria Principal
                 page = _processData.GetMemPrincipalFrame((int)frame);
 
