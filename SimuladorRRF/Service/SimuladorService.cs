@@ -328,6 +328,10 @@ namespace SimuladorRRF.Service
 
             if (frame != null)
             {
+                string herow;
+                if (frame == 64)
+                    herow = "";
+
                 // Procura a pagina no frame da Memoria Principal
                 page = _processData.GetMemPrincipalFrame((int)frame);
 
@@ -354,19 +358,22 @@ namespace SimuladorRRF.Service
 
         private OldProcessNFrame AtualizaMemPrinc(PageTable pageTable,  Page page)
         {
-            var oldProcessID = _processData.GetOldestProcess(page.ProcessID);
+            
             int frame;
+            int? oldProcessID;
 
-            if (oldProcessID != null && pageTable.QntInMem < pageTable.WSL && oldProcessID != page.ProcessID)
-                _processData.SwapOut((int)oldProcessID);
-
-            if (oldProcessID == page.ProcessID || pageTable.QntInMem == pageTable.WSL)
+            if (pageTable.QntInMem == pageTable.WSL)
             {
-                frame = _processData.SwapInSameProcess(page, (int)pageTable.WorkingSet[0]);
+                frame = _processData.SwapInSameProcess(page, (int)pageTable.FrameList[(int)pageTable.WorkingSet[0]], (int)pageTable.WorkingSet[0]);
                 oldProcessID = null;
             }
             else
             {
+                oldProcessID = _processData.GetOldestProcess(page.ProcessID);
+
+                if (oldProcessID != null)
+                    _processData.SwapOut((int)oldProcessID);
+
                 frame = _processData.SwapIn(page);
             }
 

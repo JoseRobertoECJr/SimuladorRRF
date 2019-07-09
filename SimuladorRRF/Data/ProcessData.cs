@@ -25,14 +25,23 @@ namespace SimuladorRRF.Data
 
             MemPrincipal = new PageArray();
 
-            Processes.Add(new Process
+            GenerateProcessList();
+
+        }
+
+        private void GenerateProcessList()
+        {
+            for (var i = 0; i < 100; i++)
             {
-                Id = 1,
-                Chegada = 2,
-                TempoCPU = 15,
-                Blocks = new BlockArray(),
-                NumPags = (new Random()).Next(4, 9)
-            });
+                Processes.Add(new Process
+                {
+                    Id = i + 1,
+                    Chegada = (new Random()).Next(0, 100),
+                    TempoCPU = (new Random()).Next(4, 15),
+                    Blocks = new BlockArray(),
+                    NumPags = (new Random()).Next(4, 9)
+                });
+            }
         }
 
         public ProcessArray GetProcesses()
@@ -98,9 +107,9 @@ namespace SimuladorRRF.Data
             return MemPrincipal.GetOldestProcess(processID);
         }
 
-        public int SwapInSameProcess(Page page, int oldestPageNum)
+        public int SwapInSameProcess(Page page, int oldestFrame, int oldestPageNum)
         {
-            return MemPrincipal.SwapInSameProcess(page, oldestPageNum);
+            return MemPrincipal.SwapInSameProcess(page, oldestFrame);
         }
 
         public int SwapIn(Page page)

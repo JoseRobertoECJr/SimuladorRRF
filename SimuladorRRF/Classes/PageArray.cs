@@ -47,7 +47,7 @@ namespace SimuladorRRF.Classes
             var page = Value[frame];
             var signal = false;
             int i;
-            for (i = 0; i < _max; i++)
+            for (i = 0; i < _max-1; i++)
             {
                 if (OlderProcessList[i] == null)
                     break;
@@ -94,28 +94,25 @@ namespace SimuladorRRF.Classes
                 }
             }
 
+            string herow;
+            if (i == 64)
+                herow = "";
+
             // TODO: Alloca posicao em OlderProcessList
             UseFramePage(i);
+
 
             return i;
         }
 
-        public int SwapInSameProcess(Page page, int oldestPageNum)
+        public int SwapInSameProcess(Page page, int oldestFrame)
         {
-            int i;
-            for (i = 0; i < NumPages; i++)
-            {
-                if (Value[i].ProcessID == page.ProcessID && oldestPageNum == Value[i].PageNum)
-                {
-                    Value[i] = page;
-                    break;
-                }
-            }
+            Value[oldestFrame] = page;
 
             // TODO: Renova posicao em OlderProcessList
-            UseFramePage(i);
+            UseFramePage(oldestFrame);
 
-            return i;
+            return oldestFrame;
         }
 
         public void SwapOut(int processID)
@@ -131,7 +128,7 @@ namespace SimuladorRRF.Classes
 
             // Shift na OlderProcessList
             var signal = false;
-            for (i = 0; i < NumPages; i++)
+            for (i = 0; i < NumPages-1; i++)
             {
                 if (OlderProcessList[i] == processID)
                     signal = true;

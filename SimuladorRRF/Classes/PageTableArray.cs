@@ -20,18 +20,21 @@ namespace SimuladorRRF.Classes
             int i;
             for (i = 0; i < Value.Count(); i++)
             {
-                var pageTable = Value[i];
-
-                if (pageTable.ProcessID == processID)
+                if (Value[i].ProcessID == processID)
                     break;
             }
 
             // Remove a referencia a memoria principal
-            var processPageTable = Value[i];
-            for (var j = 0; j < processPageTable.FrameList.Count(); j++)
+            for (var j = 0; j < Value[i].FrameList.Count(); j++)
             {
-                processPageTable.FrameList[j] = null;
+                Value[i].FrameList[j] = null;
             }
+
+            for(var j = 0; j < Value[i].WSL; j++)
+            {
+                Value[i].WorkingSet[j] = null;
+            }
+
         }
 
         public void AtualizaPageTable(Process process, int pageNum, int enderecoReal)
@@ -46,7 +49,5 @@ namespace SimuladorRRF.Classes
                 }
             }
         }
-
-
     }
 }
