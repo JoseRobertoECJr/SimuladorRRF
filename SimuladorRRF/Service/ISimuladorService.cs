@@ -10,7 +10,7 @@ namespace SimuladorRRF.Service
     {
         ProcessArray GetProcesses();
         void SetProcesses(ProcessArray newProcesses);
-        ProcessArray SimularProcessamento();
+        Response SimularProcessamento();
         void ChangeProcessListData(ProcessArray processList);
         void ChangeCycleLength(int cycleLength);
         int GetCycleLength();

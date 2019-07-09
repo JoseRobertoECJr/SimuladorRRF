@@ -2,6 +2,11 @@ import { Component, Inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import * as CanvasJS from '../../assets/canvasjs.min';
 
+class Resp {
+  log: any[]
+  processList: any[]
+}
+
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -12,6 +17,7 @@ export class HomeComponent {
   public graphBlocks: any[];
   public data: any[];
   public chart;
+  public log: any[];
 
   constructor(private http: HttpClient, @Inject('BASE_URL') private baseUrl: string) {
   }
@@ -28,8 +34,19 @@ export class HomeComponent {
     this.processos = [];
     this.graphBlocks = [];
     this.data = [];
-    this.http.get<any[]>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe(result => {
-      let processos = result;
+    this.http.get<Resp>(this.baseUrl + 'api/Simulador/SimularProcessamento').subscribe((result: Resp) => {
+      let processos = result.processList;
+
+      let logs = [];
+      for (let log of result.log) {
+        if (log == null)
+          break;
+        logs.push(log);
+      }
+      this.log = logs;
+
+
+      console.log(result)
 
       // Limpando Arrays
       let clearProcessos = [];

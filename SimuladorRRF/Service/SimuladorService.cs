@@ -3,6 +3,7 @@ using SimuladorRRF.Data;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using static SimuladorRRF.Utils;
 
@@ -18,8 +19,14 @@ namespace SimuladorRRF.Service
         private int _ioInstante;
         private int _cycleLength;
 
+        private string[] _log;
+        private int _lastLogPos;
+
         public SimuladorService(IProcessData processData)
         {
+            _log = new string[1000];
+            _lastLogPos = 0;
+
             _processData = processData;
 
             _processList = new ProcessArray(_processData.GetProcesses().Value);
@@ -62,7 +69,7 @@ namespace SimuladorRRF.Service
 
         #endregion
 
-        public ProcessArray SimularProcessamento()
+        public Response SimularProcessamento()
         {
             Process process = null;
             var finishedProcessList = new ProcessArray();
@@ -80,8 +87,8 @@ namespace SimuladorRRF.Service
                     else
                         process = _altaPrFila.Remove();
 
-                    var pagReal = RequisitaPagina(process);
-                    process = Run(process);
+                    var page = RequisitaPagina(process);
+                    process = Run(process, page);
                 }
 
                 // Verifica se chegaram novos processos e coloca na fila
@@ -102,13 +109,13 @@ namespace SimuladorRRF.Service
                 }
             }
 
-            return finishedProcessList;
+            return new Response(finishedProcessList.Value, _log);
 
         }
 
         #region Metodos Processos
 
-        private Process Run(Process process)
+        private Process Run(Process process, Page page)
         {
             // Calcula tempo de execucao
             var processTempo = _cycleLength;
@@ -153,7 +160,7 @@ namespace SimuladorRRF.Service
                 process.Blocks.Add(new Block
                 {
                     Tipo = BlockTipoEnum.Processo,
-                    Tempo = ioTime
+                    Tempo = ioTime,
                 });
 
                 _instante = process.TempoTotal;
@@ -177,7 +184,7 @@ namespace SimuladorRRF.Service
                 process.Blocks.Add(new Block
                 {
                     Tipo = BlockTipoEnum.Processo,
-                    Tempo = processTempo
+                    Tempo = processTempo,
                 });
 
                 // Define prox instante
@@ -317,8 +324,11 @@ namespace SimuladorRRF.Service
         {
             Page page;
 
+            var message = new StringBuilder();
+
             // Pergunta ao projeto qual a pagina que precisa para executar
             var pageNum = process.NextPage();
+            message.Append($"Processo: {process.Id}. Página: {pageNum}. ");
 
             // Resgata a Tabela de Paginas
             var pageTable = _processData.GetPageTable(process);
@@ -330,19 +340,26 @@ namespace SimuladorRRF.Service
             {
                 // Procura a pagina no frame da Memoria Principal
                 page = _processData.GetMemPrincipalFrame((int)frame);
-
+                message.Append($"Memória Principal no frame {frame}. ");
             } else {
 
                 page = BuscaPagMemVirt(process, pageNum);
+                message.Append($"Memória Virtual. ");
 
                 var oldProcessNFrame = AtualizaMemPrinc(pageTable, page);
-                 
+                message.Append($"Foi carregada no frame {oldProcessNFrame.Frame}. ");
+                
                 if(oldProcessNFrame.OldProcessID != null)
+                {
                     _processData.LimpaPageTable((int)oldProcessNFrame.OldProcessID);
+                    message.Append($"Retirando o processo {oldProcessNFrame.OldProcessID} da Memória Princ.");
+                }
 
                 _processData.AtualizaPageTable(process, pageNum, oldProcessNFrame.Frame);
             }
 
+            _log[_lastLogPos] = message.ToString();
+            _lastLogPos++;
 
             return page;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
 using SimuladorRRF.Classes;
 using SimuladorRRF.Service;
 
@@ -19,9 +20,11 @@ namespace SimuladorRRF.Controllers
         }
 
         [HttpGet("[action]")]
-        public Process[] SimularProcessamento()
+        public Response SimularProcessamento()
         {
-            return _simuladorService.SimularProcessamento().Value;
+            var res = _simuladorService.SimularProcessamento();
+            var resStr = JsonConvert.SerializeObject(res);
+            return res;
         }
 
         [HttpGet("[action]")]
